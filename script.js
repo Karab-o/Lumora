@@ -92,8 +92,8 @@ function authenticateUser() {
     localStorage.setItem('chocolat-fruitier-user', JSON.stringify(currentUser));
     localStorage.setItem('chocolat-fruitier-auth', 'true');
     
-    // Hide auth overlay and show main content
-    hideAuthOverlay();
+    // Hide auth landing and show main website
+    hideAuthLanding();
     
     // Update user welcome message
     updateUserInterface();
@@ -105,26 +105,33 @@ function authenticateUser() {
     showWelcomeNotification();
 }
 
-function hideAuthOverlay() {
-    const authOverlay = document.getElementById('authOverlay');
-    const mainContent = document.getElementById('mainContent');
+function hideAuthLanding() {
+    const authLanding = document.getElementById('authLanding');
+    const mainWebsite = document.getElementById('mainWebsite');
     
-    authOverlay.style.animation = 'fadeOut 0.5s ease-out forwards';
+    authLanding.style.animation = 'fadeOut 0.5s ease-out forwards';
     
     setTimeout(() => {
-        authOverlay.style.display = 'none';
-        mainContent.style.display = 'block';
-        mainContent.style.animation = 'fadeIn 0.5s ease-out';
+        authLanding.style.display = 'none';
+        mainWebsite.style.display = 'block';
+        mainWebsite.style.animation = 'fadeIn 0.5s ease-out';
     }, 500);
 }
 
 function updateUserInterface() {
-    const userWelcome = document.getElementById('userWelcome');
-    const userInfoBar = document.getElementById('userInfoBar');
+    const userName = document.getElementById('userName');
+    const userAvatar = document.getElementById('userAvatar');
     
     if (currentUser) {
-        userWelcome.textContent = `Bonjour, ${currentUser.name} !`;
-        userInfoBar.style.display = 'flex';
+        userName.textContent = currentUser.name;
+        
+        // Set user avatar
+        if (currentUser.picture) {
+            userAvatar.innerHTML = `<img src="${currentUser.picture}" alt="${currentUser.name}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+        } else {
+            // Use first letter of name as avatar
+            userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+        }
     }
 }
 
@@ -189,12 +196,12 @@ function checkAuthenticationStatus() {
             currentUser = JSON.parse(savedUser);
             isAuthenticated = true;
             
-            // Hide auth overlay immediately
-            const authOverlay = document.getElementById('authOverlay');
-            const mainContent = document.getElementById('mainContent');
+            // Hide auth landing immediately
+            const authLanding = document.getElementById('authLanding');
+            const mainWebsite = document.getElementById('mainWebsite');
             
-            authOverlay.style.display = 'none';
-            mainContent.style.display = 'block';
+            authLanding.style.display = 'none';
+            mainWebsite.style.display = 'block';
             
             // Update UI
             setTimeout(() => {
