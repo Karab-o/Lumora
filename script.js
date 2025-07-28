@@ -2,6 +2,8 @@
 let cart = [];
 let currentCarouselIndex = 0;
 const productsPerView = window.innerWidth <= 768 ? 1 : 3;
+let currentUser = null;
+let isAuthenticated = false;
 
 // Product Data
 const productData = {
@@ -39,6 +41,184 @@ const productData = {
     }
 };
 
+// Authentication Functions
+function initializeGoogleAuth() {
+    // Initialize Google Sign-In
+    window.google?.accounts?.id?.initialize({
+        client_id: 'your-google-client-id.apps.googleusercontent.com',
+        callback: handleCredentialResponse,
+        auto_select: false,
+        cancel_on_tap_outside: false
+    });
+}
+
+function handleCredentialResponse(response) {
+    try {
+        // Decode JWT token (in production, verify on server)
+        const payload = JSON.parse(atob(response.credential.split('.')[1]));
+        
+        currentUser = {
+            id: payload.sub,
+            name: payload.name,
+            email: payload.email,
+            picture: payload.picture,
+            loginMethod: 'google'
+        };
+        
+        authenticateUser();
+    } catch (error) {
+        console.error('Error processing Google credential:', error);
+        alert('Erreur lors de la connexion Google. Veuillez réessayer.');
+    }
+}
+
+function demoLogin() {
+    // Demo login for testing purposes
+    currentUser = {
+        id: 'demo-user',
+        name: 'Utilisateur Démo',
+        email: 'demo@chocolatfruitier.com',
+        picture: null,
+        loginMethod: 'demo'
+    };
+    
+    authenticateUser();
+}
+
+function authenticateUser() {
+    isAuthenticated = true;
+    
+    // Save user session
+    localStorage.setItem('chocolat-fruitier-user', JSON.stringify(currentUser));
+    localStorage.setItem('chocolat-fruitier-auth', 'true');
+    
+    // Hide auth overlay and show main content
+    hideAuthOverlay();
+    
+    // Update user welcome message
+    updateUserInterface();
+    
+    // Play success sound
+    playSound('success');
+    
+    // Show welcome notification
+    showWelcomeNotification();
+}
+
+function hideAuthOverlay() {
+    const authOverlay = document.getElementById('authOverlay');
+    const mainContent = document.getElementById('mainContent');
+    
+    authOverlay.style.animation = 'fadeOut 0.5s ease-out forwards';
+    
+    setTimeout(() => {
+        authOverlay.style.display = 'none';
+        mainContent.style.display = 'block';
+        mainContent.style.animation = 'fadeIn 0.5s ease-out';
+    }, 500);
+}
+
+function updateUserInterface() {
+    const userWelcome = document.getElementById('userWelcome');
+    const userInfoBar = document.getElementById('userInfoBar');
+    
+    if (currentUser) {
+        userWelcome.textContent = `Bonjour, ${currentUser.name} !`;
+        userInfoBar.style.display = 'flex';
+    }
+}
+
+function showWelcomeNotification() {
+    // Create and show welcome notification
+    const notification = document.createElement('div');
+    notification.className = 'welcome-notification';
+    notification.innerHTML = `
+        <div class="notification-content">
+            <h4>Bienvenue ${currentUser.name} !</h4>
+            <p>Profitez de votre expérience personnalisée chez Chocolat Fruitier.</p>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }, 4000);
+}
+
+function logout() {
+    const confirmation = confirm('Êtes-vous sûr de vouloir vous déconnecter ?');
+    
+    if (confirmation) {
+        // Clear user data
+        currentUser = null;
+        isAuthenticated = false;
+        
+        // Clear storage
+        localStorage.removeItem('chocolat-fruitier-user');
+        localStorage.removeItem('chocolat-fruitier-auth');
+        
+        // Clear cart (optional)
+        cart = [];
+        localStorage.removeItem('chocolat-fruitier-cart');
+        
+        // Sign out from Google
+        if (window.google?.accounts?.id) {
+            window.google.accounts.id.disableAutoSelect();
+        }
+        
+        // Reload page to show auth overlay
+        window.location.reload();
+    }
+}
+
+function checkAuthenticationStatus() {
+    // Check if user is already authenticated
+    const savedUser = localStorage.getItem('chocolat-fruitier-user');
+    const authStatus = localStorage.getItem('chocolat-fruitier-auth');
+    
+    if (authStatus === 'true' && savedUser) {
+        try {
+            currentUser = JSON.parse(savedUser);
+            isAuthenticated = true;
+            
+            // Hide auth overlay immediately
+            const authOverlay = document.getElementById('authOverlay');
+            const mainContent = document.getElementById('mainContent');
+            
+            authOverlay.style.display = 'none';
+            mainContent.style.display = 'block';
+            
+            // Update UI
+            setTimeout(() => {
+                updateUserInterface();
+            }, 100);
+            
+        } catch (error) {
+            console.error('Error parsing saved user data:', error);
+            // Clear corrupted data
+            localStorage.removeItem('chocolat-fruitier-user');
+            localStorage.removeItem('chocolat-fruitier-auth');
+        }
+    }
+}
+
+// Protect interactive functions - require authentication
+function requireAuth(callback) {
+    if (!isAuthenticated) {
+        alert('Veuillez vous connecter pour accéder à cette fonctionnalité.');
+        return false;
+    }
+    return callback();
+}
+
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', function() {
     initializeWebsite();
@@ -46,12 +226,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Initialize Website
 function initializeWebsite() {
+    checkAuthenticationStatus();
     setupEventListeners();
     setupScrollAnimations();
     setupNavbarScroll();
     setupCarousel();
     loadCartFromStorage();
     addSoundEffects();
+    initializeGoogleAuth();
 }
 
 // Event Listeners
@@ -198,23 +380,26 @@ function updateCarouselView() {
 
 // Shopping Cart Functions
 function addToCart(id, name, price) {
-    const existingItem = cart.find(item => item.id === id);
-    
-    if (existingItem) {
-        existingItem.quantity += 1;
-    } else {
-        cart.push({
-            id: id,
-            name: name,
-            price: price,
-            quantity: 1
-        });
-    }
-    
-    updateCartDisplay();
-    saveCartToStorage();
-    showAddToCartAnimation();
-    playSound('add-to-cart');
+    return requireAuth(() => {
+        const existingItem = cart.find(item => item.id === id);
+        
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({
+                id: id,
+                name: name,
+                price: price,
+                quantity: 1
+            });
+        }
+        
+        updateCartDisplay();
+        saveCartToStorage();
+        showAddToCartAnimation();
+        playSound('add-to-cart');
+        return true;
+    });
 }
 
 function removeFromCart(id) {
@@ -268,8 +453,11 @@ function updateCartDisplay() {
 }
 
 function openCart() {
-    document.getElementById('cartModal').classList.add('active');
-    playSound('modal-open');
+    return requireAuth(() => {
+        document.getElementById('cartModal').classList.add('active');
+        playSound('modal-open');
+        return true;
+    });
 }
 
 function closeCart() {
@@ -300,30 +488,33 @@ function checkout() {
 
 // Custom Bar Builder
 function addCustomBar() {
-    const chocolateType = document.querySelector('input[name="chocolate"]:checked');
-    const selectedFruits = document.querySelectorAll('input[name="fruits"]:checked');
-    
-    if (!chocolateType) {
-        alert('Veuillez choisir un type de chocolat');
-        return;
-    }
-    
-    if (selectedFruits.length === 0) {
-        alert('Veuillez sélectionner au moins un fruit');
-        return;
-    }
-    
-    const fruits = Array.from(selectedFruits).map(input => input.value);
-    const customName = `Chocolat ${chocolateType.value} aux ${fruits.join(', ')}`;
-    
-    addToCart('custom', customName, 12.00);
-    
-    // Reset form
-    document.querySelectorAll('.custom-builder input').forEach(input => {
-        input.checked = false;
+    return requireAuth(() => {
+        const chocolateType = document.querySelector('input[name="chocolate"]:checked');
+        const selectedFruits = document.querySelectorAll('input[name="fruits"]:checked');
+        
+        if (!chocolateType) {
+            alert('Veuillez choisir un type de chocolat');
+            return;
+        }
+        
+        if (selectedFruits.length === 0) {
+            alert('Veuillez sélectionner au moins un fruit');
+            return;
+        }
+        
+        const fruits = Array.from(selectedFruits).map(input => input.value);
+        const customName = `Chocolat ${chocolateType.value} aux ${fruits.join(', ')}`;
+        
+        addToCart('custom', customName, 12.00);
+        
+        // Reset form
+        document.querySelectorAll('.custom-builder input').forEach(input => {
+            input.checked = false;
+        });
+        
+        alert('Votre création personnalisée a été ajoutée au panier !');
+        return true;
     });
-    
-    alert('Votre création personnalisée a été ajoutée au panier !');
 }
 
 // Product Modal

@@ -7,9 +7,92 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍫</text></svg>">
-</head>
-<body>
-    <!-- Navigation -->
+    <!-- Google OAuth -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <meta name="google-signin-client_id" content="your-google-client-id.apps.googleusercontent.com">
+  </head>
+  <body>
+      <!-- Authentication Overlay -->
+      <div class="auth-overlay" id="authOverlay">
+          <div class="auth-container">
+              <div class="auth-content">
+                  <div class="auth-logo">
+                      <h1>Chocolat Fruitier</h1>
+                      <span class="auth-tagline">Artisan depuis 1925</span>
+                  </div>
+                  
+                  <div class="auth-welcome">
+                      <h2>Bienvenue dans notre univers chocolaté</h2>
+                      <p>Connectez-vous pour découvrir nos créations artisanales et profiter d'une expérience personnalisée.</p>
+                  </div>
+                  
+                  <div class="auth-methods">
+                      <div class="google-signin-container">
+                          <div id="g_id_onload"
+                               data-client_id="your-google-client-id.apps.googleusercontent.com"
+                               data-context="signin"
+                               data-ux_mode="popup"
+                               data-callback="handleCredentialResponse"
+                               data-auto_prompt="false">
+                          </div>
+                          
+                          <div class="g_id_signin"
+                               data-type="standard"
+                               data-shape="rectangular"
+                               data-theme="outline"
+                               data-text="signin_with"
+                               data-size="large"
+                               data-logo_alignment="left">
+                          </div>
+                      </div>
+                      
+                      <!-- Alternative manual login for demo -->
+                      <div class="demo-login">
+                          <p class="demo-text">Pour la démonstration, vous pouvez également :</p>
+                          <button class="demo-login-btn" onclick="demoLogin()">
+                              Continuer en mode démonstration
+                          </button>
+                      </div>
+                  </div>
+                  
+                  <div class="auth-benefits">
+                      <h3>Avec votre compte, profitez de :</h3>
+                      <ul>
+                          <li>🍫 Historique de vos commandes personnalisées</li>
+                          <li>🎁 Offres exclusives et nouveautés en avant-première</li>
+                          <li>📦 Suivi de vos livraisons en temps réel</li>
+                          <li>⭐ Programme de fidélité avec récompenses</li>
+                      </ul>
+                  </div>
+              </div>
+              
+              <div class="auth-visual">
+                  <div class="auth-image">
+                      <img src="https://images.unsplash.com/photo-1511381939415-e44015466834?w=600&h=800&fit=crop" alt="Artisan chocolatier">
+                      <div class="auth-image-overlay">
+                          <div class="floating-elements">
+                              <div class="floating-chocolate">🍫</div>
+                              <div class="floating-fruit">🍓</div>
+                              <div class="floating-chocolate">🍫</div>
+                              <div class="floating-fruit">🥭</div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <!-- Main Website Content (Initially Hidden) -->
+      <div class="main-content" id="mainContent" style="display: none;">
+          <!-- User Info Bar -->
+          <div class="user-info-bar" id="userInfoBar">
+              <div class="user-welcome">
+                  <span id="userWelcome">Bienvenue !</span>
+              </div>
+              <button class="logout-btn" onclick="logout()">Se déconnecter</button>
+          </div>
+
+      <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-logo">
@@ -327,6 +410,8 @@
             </div>
         </div>
     </div>
+
+        </div> <!-- End of main-content -->
 
     <script src="script.js"></script>
 </body>
