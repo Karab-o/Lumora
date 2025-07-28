@@ -3,450 +3,784 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chocolat Fruitier - Artisan Chocolate Fruit Bars</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Chocolat Fruitier - Premium Artisan Chocolate Fruit Bars</title>
+    <meta name="description" content="Discover luxury artisan chocolate fruit bars crafted with premium ingredients. Build your own custom bars, explore gift collections, and enjoy free delivery.">
+    <meta name="keywords" content="chocolate, fruit bars, artisan, premium, custom chocolate, gifts, luxury chocolate">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍫</text></svg>">
     <!-- Google OAuth -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <meta name="google-signin-client_id" content="your-google-client-id.apps.googleusercontent.com">
+    <!-- EmailJS for contact form -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 <body>
-    <!-- Authentication Landing Page (Initially Visible) -->
-    <div class="auth-landing" id="authLanding">
-        <div class="auth-background">
-            <video autoplay muted loop playsinline class="auth-bg-video">
+    <!-- Welcome/Landing Page (Initially Visible) -->
+    <div class="page-container" id="welcomePage">
+        <!-- Hero Video Background -->
+        <div class="hero-background">
+            <video autoplay muted loop playsinline class="hero-video">
                 <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4">
             </video>
-            <div class="auth-bg-overlay"></div>
+            <div class="hero-overlay"></div>
         </div>
 
-        <div class="auth-container">
-            <div class="auth-header">
-                <div class="auth-logo">
+        <!-- Welcome Content -->
+        <div class="welcome-container">
+            <header class="welcome-header">
+                <div class="brand-logo">
                     <h1>Chocolat Fruitier</h1>
-                    <span class="auth-tagline">Artisan depuis 1925</span>
+                    <span class="brand-tagline">Artisan depuis 1925</span>
                 </div>
-            </div>
+                <nav class="auth-nav">
+                    <button class="auth-btn login-btn" onclick="showAuthModal('login')">
+                        <i class="fas fa-sign-in-alt"></i> Se connecter
+                    </button>
+                    <button class="auth-btn signup-btn" onclick="showAuthModal('signup')">
+                        <i class="fas fa-user-plus"></i> S'inscrire
+                    </button>
+                </nav>
+            </header>
 
-            <div class="auth-main">
-                <div class="auth-welcome-section">
-                    <h2>Bienvenue dans notre Maison du Chocolat</h2>
-                    <p>Découvrez nos créations artisanales exclusives. Connectez-vous pour accéder à notre boutique en ligne et créer vos barres de chocolat personnalisées.</p>
+            <main class="welcome-main">
+                <div class="hero-content">
+                    <h2 class="hero-title">
+                        <span class="hero-subtitle">L'Excellence du</span>
+                        <span class="hero-main-title">Chocolat Artisanal</span>
+                    </h2>
+                    <p class="hero-description">
+                        Découvrez nos créations uniques : barres de chocolat premium aux fruits naturels, 
+                        fabriquées avec passion dans notre atelier parisien. Créez votre barre personnalisée 
+                        ou explorez notre collection exclusive.
+                    </p>
                     
-                    <div class="auth-features">
-                        <div class="feature-item">
-                            <div class="feature-icon">🍫</div>
-                            <span>Chocolats artisanaux premium</span>
+                    <div class="hero-features">
+                        <div class="feature-highlight">
+                            <i class="fas fa-award"></i>
+                            <span>Ingrédients Premium</span>
                         </div>
-                        <div class="feature-item">
-                            <div class="feature-icon">🎨</div>
-                            <span>Créateur de barres personnalisées</span>
+                        <div class="feature-highlight">
+                            <i class="fas fa-leaf"></i>
+                            <span>100% Naturel</span>
                         </div>
-                        <div class="feature-item">
-                            <div class="feature-icon">🚚</div>
-                            <span>Livraison partout en France</span>
+                        <div class="feature-highlight">
+                            <i class="fas fa-truck"></i>
+                            <span>Livraison Gratuite</span>
                         </div>
-                        <div class="feature-item">
-                            <div class="feature-icon">⭐</div>
-                            <span>Programme de fidélité exclusif</span>
+                        <div class="feature-highlight">
+                            <i class="fas fa-gift"></i>
+                            <span>Emballage Cadeau</span>
                         </div>
+                    </div>
+
+                    <div class="hero-actions">
+                        <button class="cta-primary" onclick="showAuthModal('signup')">
+                            <span>Commencer votre expérience</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button class="cta-secondary" onclick="scrollToSection('.welcome-preview')">
+                            <span>Découvrir nos produits</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
                     </div>
                 </div>
+            </main>
 
-                <div class="auth-login-section">
-                    <div class="login-card">
-                        <h3>Connexion requise</h3>
-                        <p>Pour passer commande et accéder à toutes nos fonctionnalités, veuillez vous connecter avec votre compte Google.</p>
-                        
-                        <div class="login-methods">
-                            <div class="google-signin-container">
-                                <div id="g_id_onload"
-                                     data-client_id="your-google-client-id.apps.googleusercontent.com"
-                                     data-context="signin"
-                                     data-ux_mode="popup"
-                                     data-callback="handleCredentialResponse"
-                                     data-auto_prompt="false">
-                                </div>
-                                
-                                <div class="g_id_signin"
-                                     data-type="standard"
-                                     data-shape="rectangular"
-                                     data-theme="outline"
-                                     data-text="signin_with"
-                                     data-size="large"
-                                     data-logo_alignment="left">
-                                </div>
-                            </div>
-                            
-                            <div class="divider">
-                                <span>ou</span>
-                            </div>
-                            
-                            <!-- Demo login for testing -->
-                            <button class="demo-login-btn" onclick="demoLogin()">
-                                <span class="demo-icon">👤</span>
-                                Continuer en mode démonstration
-                            </button>
-                        </div>
-
-                        <div class="login-benefits">
-                            <h4>Avec votre compte :</h4>
-                            <ul>
-                                <li>✨ Accès à la boutique exclusive</li>
-                                <li>🛒 Panier sauvegardé automatiquement</li>
-                                <li>📦 Suivi de commandes en temps réel</li>
-                                <li>🎁 Offres membres et avant-premières</li>
-                                <li>🏆 Points de fidélité à chaque achat</li>
-                            </ul>
-                        </div>
+            <!-- Product Preview Section -->
+            <section class="welcome-preview">
+                <h3>Nos Créations Phares</h3>
+                <div class="preview-grid">
+                    <div class="preview-card">
+                        <img src="https://images.unsplash.com/photo-1549007953-2f2dc0b24019?w=300&h=200&fit=crop" alt="Chocolat Fraise Premium">
+                        <h4>Chocolat Fraise Premium</h4>
+                        <p>Chocolat noir 70% et fraises françaises</p>
+                        <span class="preview-price">8,50€</span>
                     </div>
+                    <div class="preview-card">
+                        <img src="https://images.unsplash.com/photo-1511381939415-e44015466834?w=300&h=200&fit=crop" alt="Délice Mangue Passion">
+                        <h4>Délice Mangue Passion</h4>
+                        <p>Chocolat au lait et mangue exotique</p>
+                        <span class="preview-price">9,00€</span>
+                    </div>
+                    <div class="preview-card">
+                        <img src="https://images.unsplash.com/photo-1548907040-4baa42d10919?w=300&h=200&fit=crop" alt="Création Personnalisée">
+                        <h4>Création Personnalisée</h4>
+                        <p>Concevez votre barre unique</p>
+                        <span class="preview-price">Dès 12€</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Authentication Modal -->
+    <div class="auth-modal" id="authModal">
+        <div class="auth-modal-content">
+            <button class="auth-close" onclick="hideAuthModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <!-- Login Form -->
+            <div class="auth-form" id="loginForm">
+                <div class="auth-header">
+                    <h3>Connexion</h3>
+                    <p>Accédez à votre espace personnel</p>
+                </div>
+                
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" required>
+                        <i class="fas fa-envelope form-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loginPassword">Mot de passe</label>
+                        <input type="password" id="loginPassword" required>
+                        <i class="fas fa-lock form-icon"></i>
+                        <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="form-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="rememberMe">
+                            <span class="checkmark"></span>
+                            Se souvenir de moi
+                        </label>
+                        <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+                    </div>
+                    
+                    <button type="submit" class="auth-submit">
+                        <span>Se connecter</span>
+                        <i class="fas fa-sign-in-alt"></i>
+                    </button>
+                </form>
+                
+                <div class="auth-divider">
+                    <span>ou</span>
+                </div>
+                
+                <div class="social-login">
+                    <div id="g_id_onload"
+                         data-client_id="your-google-client-id.apps.googleusercontent.com"
+                         data-context="signin"
+                         data-ux_mode="popup"
+                         data-callback="handleGoogleLogin"
+                         data-auto_prompt="false">
+                    </div>
+                    
+                    <div class="g_id_signin"
+                         data-type="standard"
+                         data-shape="rectangular"
+                         data-theme="outline"
+                         data-text="signin_with"
+                         data-size="large">
+                    </div>
+                    
+                    <button class="demo-login" onclick="handleDemoLogin()">
+                        <i class="fas fa-user"></i>
+                        Connexion démo
+                    </button>
+                </div>
+                
+                <div class="auth-switch">
+                    <p>Pas encore de compte ? 
+                        <a href="#" onclick="switchAuthForm('signup')">Créer un compte</a>
+                    </p>
                 </div>
             </div>
-
-            <div class="auth-footer">
-                <p>&copy; 2024 Chocolat Fruitier. L'art du chocolat depuis 1925.</p>
-                <div class="auth-links">
-                    <a href="#privacy">Confidentialité</a>
-                    <a href="#terms">Conditions</a>
-                    <a href="#contact">Contact</a>
+            
+            <!-- Sign Up Form -->
+            <div class="auth-form" id="signupForm" style="display: none;">
+                <div class="auth-header">
+                    <h3>Créer un compte</h3>
+                    <p>Rejoignez la communauté Chocolat Fruitier</p>
+                </div>
+                
+                <form onsubmit="handleSignup(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="signupFirstName">Prénom</label>
+                            <input type="text" id="signupFirstName" required>
+                            <i class="fas fa-user form-icon"></i>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupLastName">Nom</label>
+                            <input type="text" id="signupLastName" required>
+                            <i class="fas fa-user form-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signupEmail">Email</label>
+                        <input type="email" id="signupEmail" required>
+                        <i class="fas fa-envelope form-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signupPassword">Mot de passe</label>
+                        <input type="password" id="signupPassword" required oninput="checkPasswordStrength(this.value)">
+                        <i class="fas fa-lock form-icon"></i>
+                        <button type="button" class="password-toggle" onclick="togglePassword('signupPassword')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <div class="password-strength" id="passwordStrength">
+                            <div class="strength-bar">
+                                <div class="strength-fill"></div>
+                            </div>
+                            <span class="strength-text">Saisissez un mot de passe</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirmer le mot de passe</label>
+                        <input type="password" id="confirmPassword" required oninput="checkPasswordMatch()">
+                        <i class="fas fa-lock form-icon"></i>
+                        <div class="password-match" id="passwordMatch"></div>
+                    </div>
+                    
+                    <div class="form-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="agreeTerms" required>
+                            <span class="checkmark"></span>
+                            J'accepte les <a href="#" target="_blank">conditions d'utilisation</a>
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="subscribeNewsletter">
+                            <span class="checkmark"></span>
+                            Recevoir la newsletter gourmande
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="auth-submit">
+                        <span>Créer mon compte</span>
+                        <i class="fas fa-user-plus"></i>
+                    </button>
+                </form>
+                
+                <div class="auth-switch">
+                    <p>Déjà un compte ? 
+                        <a href="#" onclick="switchAuthForm('login')">Se connecter</a>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Main Website Content (Hidden until login) -->
-    <div class="main-website" id="mainWebsite" style="display: none;">
-        <!-- User Header Bar -->
-        <div class="user-header-bar">
-            <div class="user-info">
-                <div class="user-avatar" id="userAvatar"></div>
-                <span class="user-name" id="userName">Utilisateur</span>
-            </div>
-            <button class="logout-btn" onclick="logout()">
-                <span>Se déconnecter</span>
-                <span class="logout-icon">🚪</span>
-            </button>
-        </div>
-
-        <!-- Navigation -->
-        <nav class="navbar" id="navbar">
+    <!-- Main Application (Hidden until authenticated) -->
+    <div class="app-container" id="appContainer" style="display: none;">
+        <!-- Sticky Navigation -->
+        <nav class="main-navbar" id="mainNavbar">
             <div class="nav-container">
-                <div class="nav-logo">
-                    <h1>Chocolat Fruitier</h1>
-                    <span class="tagline">Artisan depuis 1925</span>
+                <div class="nav-brand" onclick="showPage('home')">
+                    <h2>Chocolat Fruitier</h2>
+                    <span>Artisan</span>
                 </div>
-                <ul class="nav-menu">
-                    <li><a href="#home" class="nav-link">Accueil</a></li>
-                    <li><a href="#products" class="nav-link">Produits</a></li>
-                    <li><a href="#ingredients" class="nav-link">Ingrédients</a></li>
-                    <li><a href="#testimonials" class="nav-link">Avis</a></li>
-                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#" onclick="showPage('home')" class="nav-link active">
+                        <i class="fas fa-home"></i> Accueil
+                    </a></li>
+                    <li><a href="#" onclick="showPage('products')" class="nav-link">
+                        <i class="fas fa-chocolate-bar"></i> Produits
+                    </a></li>
+                    <li><a href="#" onclick="showPage('order')" class="nav-link">
+                        <i class="fas fa-palette"></i> Créer
+                    </a></li>
+                    <li><a href="#" onclick="showPage('gifts')" class="nav-link">
+                        <i class="fas fa-gift"></i> Cadeaux
+                    </a></li>
+                    <li><a href="#" onclick="showPage('contact')" class="nav-link">
+                        <i class="fas fa-envelope"></i> Contact
+                    </a></li>
                 </ul>
+                
                 <div class="nav-actions">
-                    <button class="cart-btn" id="cartBtn">
-                        <span class="cart-icon">🛒</span>
-                        <span class="cart-count" id="cartCount">0</span>
-                    </button>
-                    <div class="hamburger" id="hamburger">
-                        <span></span>
-                        <span></span>
-                        <span></span>
+                    <!-- User Profile -->
+                    <div class="user-profile" onclick="toggleUserMenu()">
+                        <div class="user-avatar" id="userAvatar">U</div>
+                        <span class="user-name" id="userName">Utilisateur</span>
+                        <i class="fas fa-chevron-down"></i>
                     </div>
+                    
+                    <!-- Shopping Cart -->
+                    <div class="cart-container" onclick="toggleCart()">
+                        <button class="cart-btn" id="cartBtn">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-count" id="cartCount">0</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Mobile Menu Toggle -->
+                    <button class="mobile-toggle" id="mobileToggle" onclick="toggleMobileMenu()">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
                 </div>
+            </div>
+            
+            <!-- User Dropdown Menu -->
+            <div class="user-dropdown" id="userDropdown">
+                <a href="#" onclick="showPage('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i> Mon tableau de bord
+                </a>
+                <a href="#" onclick="showPage('orders')">
+                    <i class="fas fa-box"></i> Mes commandes
+                </a>
+                <a href="#" onclick="showPage('profile')">
+                    <i class="fas fa-user-cog"></i> Mon profil
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Se déconnecter
+                </a>
             </div>
         </nav>
 
-        <!-- Hero Section -->
-        <section id="home" class="hero">
-            <div class="hero-video">
-                <video autoplay muted loop playsinline>
-                    <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4">
-                </video>
-                <div class="hero-overlay"></div>
-            </div>
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    <span class="hero-subtitle">L'Art du</span>
-                    <span class="hero-main">Chocolat Fruitier</span>
-                </h1>
-                <p class="hero-description">
-                    Découvrez nos barres de chocolat artisanales aux fruits naturels, 
-                    créées avec passion dans notre atelier parisien depuis 1925.
-                </p>
-                <button class="cta-button" onclick="scrollToSection('products')">
-                    <span>Découvrir nos créations</span>
-                    <div class="button-animation"></div>
-                </button>
-            </div>
-            <div class="scroll-indicator">
-                <div class="scroll-line"></div>
-                <span>Scroll</span>
-            </div>
-        </section>
-
-        <!-- Products Section -->
-        <section id="products" class="products-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">Nos Créations Artisanales</h2>
-                    <p class="section-subtitle">Chaque barre raconte une histoire de saveurs authentiques</p>
-                </div>
-                
-                <div class="product-carousel">
-                    <div class="carousel-container" id="productCarousel">
-                        <div class="product-card" data-product="fraise">
-                            <div class="product-image">
-                                <img src="https://images.unsplash.com/photo-1549007953-2f2dc0b24019?w=400&h=300&fit=crop" alt="Chocolat Fraise">
-                                <div class="product-overlay">
-                                    <button class="quick-view-btn" onclick="openProductModal('fraise')">Voir détails</button>
-                                    <button class="add-to-cart-btn" onclick="addToCart('fraise', 'Chocolat Fraise', 8.50)">Ajouter au panier</button>
+        <!-- Page Content Area -->
+        <main class="page-content">
+            <!-- Home Page -->
+            <div class="page" id="homePage">
+                <section class="hero-section">
+                    <div class="hero-content-wrapper">
+                        <div class="hero-text">
+                            <h1>Bienvenue dans l'univers <span class="highlight">Chocolat Fruitier</span></h1>
+                            <p>Explorez notre collection exclusive de chocolats artisanaux aux fruits, créez vos barres personnalisées et découvrez l'art du chocolat français.</p>
+                            <div class="hero-stats">
+                                <div class="stat">
+                                    <span class="stat-number">500+</span>
+                                    <span class="stat-label">Créations uniques</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-number">15</span>
+                                    <span class="stat-label">Fruits premium</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-number">98%</span>
+                                    <span class="stat-label">Clients satisfaits</span>
                                 </div>
                             </div>
-                            <div class="product-info">
-                                <h3>Chocolat Fraise</h3>
-                                <p>Chocolat noir 70% et morceaux de fraises séchées</p>
-                                <span class="price">8,50€</span>
+                            <div class="hero-buttons">
+                                <button class="btn-primary" onclick="showPage('products')">
+                                    Explorer les produits
+                                </button>
+                                <button class="btn-secondary" onclick="showPage('order')">
+                                    Créer ma barre
+                                </button>
                             </div>
                         </div>
+                        <div class="hero-visual">
+                            <div class="product-showcase">
+                                <img src="https://images.unsplash.com/photo-1549007953-2f2dc0b24019?w=400&h=400&fit=crop" alt="Chocolat Premium" class="showcase-image">
+                                <div class="showcase-badge">Nouveau</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-                        <div class="product-card" data-product="mangue">
-                            <div class="product-image">
-                                <img src="https://images.unsplash.com/photo-1511381939415-e44015466834?w=400&h=300&fit=crop" alt="Chocolat Mangue">
-                                <div class="product-overlay">
-                                    <button class="quick-view-btn" onclick="openProductModal('mangue')">Voir détails</button>
-                                    <button class="add-to-cart-btn" onclick="addToCart('mangue', 'Chocolat Mangue', 9.00)">Ajouter au panier</button>
+                <section class="features-section">
+                    <div class="container">
+                        <h2>Pourquoi choisir Chocolat Fruitier ?</h2>
+                        <div class="features-grid">
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-leaf"></i>
+                                </div>
+                                <h3>Ingrédients naturels</h3>
+                                <p>Fruits de saison et chocolat équitable sélectionnés avec soin</p>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-palette"></i>
+                                </div>
+                                <h3>Personnalisation</h3>
+                                <p>Créez vos barres sur mesure avec notre configurateur interactif</p>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-truck-fast"></i>
+                                </div>
+                                <h3>Livraison rapide</h3>
+                                <p>Expédition sous 24h partout en France métropolitaine</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Products Page -->
+            <div class="page" id="productsPage" style="display: none;">
+                <section class="products-header">
+                    <div class="container">
+                        <h1>Notre Collection</h1>
+                        <p>Découvrez nos créations artisanales, chacune raconte une histoire de saveurs</p>
+                        
+                        <div class="products-filters">
+                            <button class="filter-btn active" data-filter="all">Tous</button>
+                            <button class="filter-btn" data-filter="noir">Chocolat Noir</button>
+                            <button class="filter-btn" data-filter="lait">Chocolat au Lait</button>
+                            <button class="filter-btn" data-filter="blanc">Chocolat Blanc</button>
+                            <button class="filter-btn" data-filter="vegan">Vegan</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="products-grid-section">
+                    <div class="container">
+                        <div class="products-grid" id="productsGrid">
+                            <!-- Products will be dynamically loaded here -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Order/Build Your Bar Page -->
+            <div class="page" id="orderPage" style="display: none;">
+                <section class="order-header">
+                    <div class="container">
+                        <h1>Créez votre barre personnalisée</h1>
+                        <p>Laissez libre cours à votre créativité et concevez la barre de chocolat de vos rêves</p>
+                    </div>
+                </section>
+
+                <section class="bar-builder">
+                    <div class="container">
+                        <div class="builder-layout">
+                            <div class="builder-controls">
+                                <div class="builder-step active" data-step="1">
+                                    <h3><span class="step-number">1</span> Choisissez votre chocolat</h3>
+                                    <div class="chocolate-options">
+                                        <div class="option-card" data-chocolate="noir">
+                                            <img src="https://images.unsplash.com/photo-1549007953-2f2dc0b24019?w=150&h=150&fit=crop" alt="Chocolat Noir">
+                                            <h4>Chocolat Noir 70%</h4>
+                                            <p>Intense et authentique</p>
+                                            <span class="price">+0€</span>
+                                        </div>
+                                        <div class="option-card" data-chocolate="lait">
+                                            <img src="https://images.unsplash.com/photo-1511381939415-e44015466834?w=150&h=150&fit=crop" alt="Chocolat au Lait">
+                                            <h4>Chocolat au Lait</h4>
+                                            <p>Onctueux et gourmand</p>
+                                            <span class="price">+0€</span>
+                                        </div>
+                                        <div class="option-card" data-chocolate="blanc">
+                                            <img src="https://images.unsplash.com/photo-1548907040-4baa42d10919?w=150&h=150&fit=crop" alt="Chocolat Blanc">
+                                            <h4>Chocolat Blanc</h4>
+                                            <p>Délicat et crémeux</p>
+                                            <span class="price">+1€</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="builder-step" data-step="2">
+                                    <h3><span class="step-number">2</span> Sélectionnez vos fruits</h3>
+                                    <div class="fruits-grid">
+                                        <div class="fruit-option" data-fruit="fraise">
+                                            <div class="fruit-icon">🍓</div>
+                                            <span>Fraises</span>
+                                            <span class="price">+2€</span>
+                                        </div>
+                                        <div class="fruit-option" data-fruit="mangue">
+                                            <div class="fruit-icon">🥭</div>
+                                            <span>Mangue</span>
+                                            <span class="price">+2.5€</span>
+                                        </div>
+                                        <div class="fruit-option" data-fruit="framboises">
+                                            <div class="fruit-icon">🫐</div>
+                                            <span>Framboises</span>
+                                            <span class="price">+3€</span>
+                                        </div>
+                                        <div class="fruit-option" data-fruit="orange">
+                                            <div class="fruit-icon">🍊</div>
+                                            <span>Orange</span>
+                                            <span class="price">+1.5€</span>
+                                        </div>
+                                        <div class="fruit-option" data-fruit="myrtilles">
+                                            <div class="fruit-icon">🫐</div>
+                                            <span>Myrtilles</span>
+                                            <span class="price">+3€</span>
+                                        </div>
+                                        <div class="fruit-option" data-fruit="ananas">
+                                            <div class="fruit-icon">🍍</div>
+                                            <span>Ananas</span>
+                                            <span class="price">+2€</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="builder-step" data-step="3">
+                                    <h3><span class="step-number">3</span> Ajoutez des extras</h3>
+                                    <div class="extras-grid">
+                                        <div class="extra-option" data-extra="nuts">
+                                            <i class="fas fa-seedling"></i>
+                                            <span>Noix & Amandes</span>
+                                            <span class="price">+2€</span>
+                                        </div>
+                                        <div class="extra-option" data-extra="caramel">
+                                            <i class="fas fa-candy-cane"></i>
+                                            <span>Caramel</span>
+                                            <span class="price">+1.5€</span>
+                                        </div>
+                                        <div class="extra-option" data-extra="coconut">
+                                            <i class="fas fa-leaf"></i>
+                                            <span>Coco râpée</span>
+                                            <span class="price">+1€</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="product-info">
-                                <h3>Chocolat Mangue</h3>
-                                <p>Chocolat au lait et cubes de mangue exotique</p>
-                                <span class="price">9,00€</span>
-                            </div>
-                        </div>
 
-                        <div class="product-card" data-product="framboises">
-                            <div class="product-image">
-                                <img src="https://images.unsplash.com/photo-1548907040-4baa42d10919?w=400&h=300&fit=crop" alt="Chocolat Framboises">
-                                <div class="product-overlay">
-                                    <button class="quick-view-btn" onclick="openProductModal('framboises')">Voir détails</button>
-                                    <button class="add-to-cart-btn" onclick="addToCart('framboises', 'Chocolat Framboises', 8.75)">Ajouter au panier</button>
+                            <div class="builder-preview">
+                                <div class="preview-container">
+                                    <h3>Votre création</h3>
+                                    <div class="bar-preview" id="barPreview">
+                                        <div class="bar-base">
+                                            <div class="bar-chocolate" id="barChocolate"></div>
+                                            <div class="bar-toppings" id="barToppings"></div>
+                                        </div>
+                                    </div>
+                                    <div class="preview-details">
+                                        <h4 id="barName">Personnalisez votre barre</h4>
+                                        <div class="ingredients-list" id="ingredientsList">
+                                            <p>Sélectionnez vos ingrédients</p>
+                                        </div>
+                                        <div class="bar-price">
+                                            <span class="price-label">Prix:</span>
+                                            <span class="price-value" id="barPrice">12,00€</span>
+                                        </div>
+                                        <div class="quantity-selector">
+                                            <label>Quantité:</label>
+                                            <div class="quantity-controls">
+                                                <button onclick="changeQuantity(-1)">-</button>
+                                                <input type="number" id="barQuantity" value="1" min="1" max="10">
+                                                <button onclick="changeQuantity(1)">+</button>
+                                            </div>
+                                        </div>
+                                        <button class="add-custom-bar" onclick="addCustomBarToCart()">
+                                            Ajouter au panier
+                                            <i class="fas fa-cart-plus"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="product-info">
-                                <h3>Chocolat Framboises</h3>
-                                <p>Chocolat blanc et framboises lyophilisées</p>
-                                <span class="price">8,75€</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Gifts Page -->
+            <div class="page" id="giftsPage" style="display: none;">
+                <section class="gifts-hero">
+                    <div class="container">
+                        <h1>Offrez du bonheur</h1>
+                        <p>Découvrez nos coffrets cadeaux et offres spéciales pour faire plaisir à vos proches</p>
+                    </div>
+                </section>
+
+                <section class="promotions-section">
+                    <div class="container">
+                        <h2>Offres du moment</h2>
+                        <div class="promos-grid">
+                            <div class="promo-card featured">
+                                <div class="promo-badge">-20%</div>
+                                <h3>Offre de Bienvenue</h3>
+                                <p>20% de réduction sur votre première commande</p>
+                                <code class="promo-code">BIENVENUE20</code>
+                                <button onclick="applyPromoCode('BIENVENUE20')">Utiliser le code</button>
+                            </div>
+                            <div class="promo-card">
+                                <div class="promo-badge">2+1</div>
+                                <h3>Achetez 2, Obtenez 1 Gratuit</h3>
+                                <p>Sur toute la collection chocolat noir</p>
+                                <button onclick="showPage('products')">Voir les produits</button>
                             </div>
                         </div>
+                    </div>
+                </section>
 
-                        <div class="product-card" data-product="orange">
-                            <div class="product-image">
-                                <img src="https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=400&h=300&fit=crop" alt="Chocolat Orange">
-                                <div class="product-overlay">
-                                    <button class="quick-view-btn" onclick="openProductModal('orange')">Voir détails</button>
-                                    <button class="add-to-cart-btn" onclick="addToCart('orange', 'Chocolat Orange', 8.25)">Ajouter au panier</button>
+                <section class="gift-cards-section">
+                    <div class="container">
+                        <h2>Cartes cadeaux</h2>
+                        <div class="gift-cards-grid">
+                            <div class="gift-card-option">
+                                <div class="card-design">25€</div>
+                                <h4>Carte Découverte</h4>
+                                <p>Parfaite pour une première dégustation</p>
+                                <button onclick="selectGiftCard(25)">Choisir - 25€</button>
+                            </div>
+                            <div class="gift-card-option">
+                                <div class="card-design">50€</div>
+                                <h4>Carte Plaisir</h4>
+                                <p>Pour explorer toute notre gamme</p>
+                                <button onclick="selectGiftCard(50)">Choisir - 50€</button>
+                            </div>
+                            <div class="gift-card-option">
+                                <div class="card-design">100€</div>
+                                <h4>Carte Prestige</h4>
+                                <p>L'expérience chocolat complète</p>
+                                <button onclick="selectGiftCard(100)">Choisir - 100€</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Contact Page -->
+            <div class="page" id="contactPage" style="display: none;">
+                <section class="contact-hero">
+                    <div class="container">
+                        <h1>Contactez-nous</h1>
+                        <p>Une question ? Une suggestion ? Notre équipe est là pour vous accompagner</p>
+                    </div>
+                </section>
+
+                <section class="contact-content">
+                    <div class="container">
+                        <div class="contact-layout">
+                            <div class="contact-form-section">
+                                <h2>Envoyez-nous un message</h2>
+                                <form class="contact-form" onsubmit="handleContactForm(event)">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="contactName">Nom complet</label>
+                                            <input type="text" id="contactName" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="contactEmail">Email</label>
+                                            <input type="email" id="contactEmail" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="contactSubject">Sujet</label>
+                                        <select id="contactSubject" required>
+                                            <option value="">Sélectionnez un sujet</option>
+                                            <option value="order">Question sur une commande</option>
+                                            <option value="product">Informations produit</option>
+                                            <option value="partnership">Partenariat</option>
+                                            <option value="feedback">Retour d'expérience</option>
+                                            <option value="other">Autre</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="contactMessage">Message</label>
+                                        <textarea id="contactMessage" rows="6" required placeholder="Décrivez votre demande en détail..."></textarea>
+                                    </div>
+                                    
+                                    <button type="submit" class="submit-btn">
+                                        <span>Envoyer le message</span>
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            
+                            <div class="contact-info-section">
+                                <div class="contact-card">
+                                    <h3>Notre Atelier</h3>
+                                    <div class="contact-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <div>
+                                            <strong>Adresse</strong>
+                                            <p>42 Rue de la Chocolaterie<br>75004 Paris, France</p>
+                                        </div>
+                                    </div>
+                                    <div class="contact-item">
+                                        <i class="fas fa-clock"></i>
+                                        <div>
+                                            <strong>Horaires d'ouverture</strong>
+                                            <p>Lun-Sam: 9h00 - 19h00<br>Dimanche: 10h00 - 18h00</p>
+                                        </div>
+                                    </div>
+                                    <div class="contact-item">
+                                        <i class="fas fa-phone"></i>
+                                        <div>
+                                            <strong>Téléphone</strong>
+                                            <p>+33 1 42 86 75 90</p>
+                                        </div>
+                                    </div>
+                                    <div class="contact-item">
+                                        <i class="fas fa-envelope"></i>
+                                        <div>
+                                            <strong>Email</strong>
+                                            <p>contact@chocolatfruitier.fr</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="social-links">
+                                    <h4>Suivez-nous</h4>
+                                    <div class="social-icons">
+                                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="product-info">
-                                <h3>Chocolat Orange</h3>
-                                <p>Chocolat noir et zestes d'orange confite</p>
-                                <span class="price">8,25€</span>
-                            </div>
                         </div>
                     </div>
-                    
-                    <div class="carousel-controls">
-                        <button class="carousel-btn prev" onclick="moveCarousel(-1)">‹</button>
-                        <button class="carousel-btn next" onclick="moveCarousel(1)">›</button>
-                    </div>
-                </div>
-
-                <!-- Custom Bar Builder -->
-                <div class="custom-bar-section">
-                    <h3>Créez votre barre personnalisée</h3>
-                    <div class="custom-builder">
-                        <div class="builder-step">
-                            <h4>1. Choisissez votre chocolat</h4>
-                            <div class="options">
-                                <label><input type="radio" name="chocolate" value="noir"> Chocolat Noir 70%</label>
-                                <label><input type="radio" name="chocolate" value="lait"> Chocolat au Lait</label>
-                                <label><input type="radio" name="chocolate" value="blanc"> Chocolat Blanc</label>
-                            </div>
-                        </div>
-                        <div class="builder-step">
-                            <h4>2. Sélectionnez vos fruits</h4>
-                            <div class="options">
-                                <label><input type="checkbox" name="fruits" value="fraise"> Fraises</label>
-                                <label><input type="checkbox" name="fruits" value="mangue"> Mangue</label>
-                                <label><input type="checkbox" name="fruits" value="framboises"> Framboises</label>
-                                <label><input type="checkbox" name="fruits" value="orange"> Orange</label>
-                                <label><input type="checkbox" name="fruits" value="myrtilles"> Myrtilles</label>
-                            </div>
-                        </div>
-                        <button class="custom-add-btn" onclick="addCustomBar()">Ajouter ma création - 12,00€</button>
-                    </div>
-                </div>
+                </section>
             </div>
-        </section>
+        </main>
+    </div>
 
-        <!-- Ingredients Section -->
-        <section id="ingredients" class="ingredients-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">Ingrédients Naturels</h2>
-                    <p class="section-subtitle">La qualité avant tout, depuis notre atelier artisanal</p>
-                </div>
-                
-                <div class="ingredients-grid">
-                    <div class="ingredient-card">
-                        <div class="ingredient-icon">🍫</div>
-                        <h3>Cacao Équitable</h3>
-                        <p>Sélectionné directement auprès de producteurs équitables d'Amérique du Sud</p>
-                    </div>
-                    <div class="ingredient-card">
-                        <div class="ingredient-icon">🍓</div>
-                        <h3>Fruits Français</h3>
-                        <p>Fruits de saison cueillis dans nos vergers partenaires de France</p>
-                    </div>
-                    <div class="ingredient-card">
-                        <div class="ingredient-icon">🥛</div>
-                        <h3>Lait de Normandie</h3>
-                        <p>Lait frais provenant de fermes normandes respectueuses du bien-être animal</p>
-                    </div>
-                    <div class="ingredient-card">
-                        <div class="ingredient-icon">🌿</div>
-                        <h3>Sans Additifs</h3>
-                        <p>Aucun conservateur, colorant ou arôme artificiel dans nos créations</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Testimonials Section -->
-        <section id="testimonials" class="testimonials-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">Ce que disent nos clients</h2>
-                </div>
-                
-                <div class="testimonials-grid">
-                    <div class="testimonial-card">
-                        <div class="stars">★★★★★</div>
-                        <p>"Un délice absolu ! Le chocolat fraise me rappelle les goûters de mon enfance, mais en version luxueuse."</p>
-                        <div class="testimonial-author">
-                            <strong>Marie Dubois</strong>
-                            <span>Paris</span>
-                        </div>
-                    </div>
-                    <div class="testimonial-card">
-                        <div class="stars">★★★★★</div>
-                        <p>"La qualité est exceptionnelle. On sent vraiment la passion artisanale dans chaque bouchée."</p>
-                        <div class="testimonial-author">
-                            <strong>Jean-Claude Martin</strong>
-                            <span>Lyon</span>
-                        </div>
-                    </div>
-                    <div class="testimonial-card">
-                        <div class="stars">★★★★★</div>
-                        <p>"J'ai offert un assortiment à ma famille. Tout le monde a adoré, même les plus difficiles !"</p>
-                        <div class="testimonial-author">
-                            <strong>Sophie Bernard</strong>
-                            <span>Marseille</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Contact Section -->
-        <section id="contact" class="contact-section">
-            <div class="container">
-                <div class="contact-content">
-                    <div class="contact-info">
-                        <h2>Visitez Notre Atelier</h2>
-                        <p>Découvrez nos secrets de fabrication dans notre atelier parisien</p>
-                        <div class="contact-details">
-                            <div class="contact-item">
-                                <strong>Adresse</strong>
-                                <p>42 Rue de la Chocolaterie<br>75004 Paris, France</p>
-                            </div>
-                            <div class="contact-item">
-                                <strong>Horaires</strong>
-                                <p>Lun-Sam: 9h-19h<br>Dimanche: 10h-18h</p>
-                            </div>
-                            <div class="contact-item">
-                                <strong>Contact</strong>
-                                <p>+33 1 42 86 75 90<br>bonjour@chocolatfruitier.fr</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="newsletter">
-                        <h3>Newsletter Gourmande</h3>
-                        <p>Recevez nos nouveautés et recettes exclusives</p>
-                        <form class="newsletter-form">
-                            <input type="email" placeholder="Votre email" required>
-                            <button type="submit">S'inscrire</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="container">
-                <div class="footer-content">
-                    <div class="footer-logo">
-                        <h3>Chocolat Fruitier</h3>
-                        <p>L'art du chocolat depuis 1925</p>
-                    </div>
-                    <div class="footer-links">
-                        <a href="#legal">Mentions légales</a>
-                        <a href="#privacy">Confidentialité</a>
-                        <a href="#shipping">Livraison</a>
-                        <a href="#returns">Retours</a>
-                    </div>
-                    <div class="footer-social">
-                        <a href="#" aria-label="Instagram">📷</a>
-                        <a href="#" aria-label="Facebook">📘</a>
-                        <a href="#" aria-label="Twitter">🐦</a>
-                    </div>
-                </div>
-                <div class="footer-bottom">
-                    <p>&copy; 2024 Chocolat Fruitier. Tous droits réservés.</p>
-                </div>
-            </div>
-        </footer>
-
-        <!-- Shopping Cart Modal -->
-        <div class="cart-modal" id="cartModal">
-            <div class="cart-content">
-                <div class="cart-header">
-                    <h3>Votre Panier</h3>
-                    <button class="close-cart" onclick="closeCart()">×</button>
-                </div>
-                <div class="cart-items" id="cartItems">
-                    <p class="empty-cart">Votre panier est vide</p>
-                </div>
-                <div class="cart-footer">
-                    <div class="cart-total">
-                        <strong>Total: <span id="cartTotal">0,00€</span></strong>
-                    </div>
-                    <button class="checkout-btn" onclick="checkout()">Commander</button>
-                </div>
+    <!-- Shopping Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>Votre Panier</h3>
+            <button class="cart-close" onclick="toggleCart()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="empty-cart">
+                <i class="fas fa-shopping-cart"></i>
+                <p>Votre panier est vide</p>
+                <button onclick="showPage('products')">Découvrir nos produits</button>
             </div>
         </div>
-
-        <!-- Product Modal -->
-        <div class="product-modal" id="productModal">
-            <div class="modal-content">
-                <button class="close-modal" onclick="closeProductModal()">×</button>
-                <div class="modal-body" id="modalBody">
-                    <!-- Product details will be inserted here -->
+        <div class="cart-footer" id="cartFooter" style="display: none;">
+            <div class="cart-summary">
+                <div class="promo-section">
+                    <input type="text" id="promoInput" placeholder="Code promo">
+                    <button onclick="applyPromoCode()">Appliquer</button>
+                </div>
+                <div class="total-line">
+                    <span>Sous-total:</span>
+                    <span id="cartSubtotal">0,00€</span>
+                </div>
+                <div class="total-line discount" id="discountLine" style="display: none;">
+                    <span>Remise:</span>
+                    <span id="cartDiscount">-0,00€</span>
+                </div>
+                <div class="total-line shipping">
+                    <span>Livraison:</span>
+                    <span id="cartShipping">Gratuite</span>
+                </div>
+                <div class="total-line final">
+                    <span>Total:</span>
+                    <span id="cartTotal">0,00€</span>
                 </div>
             </div>
+            <button class="checkout-btn" onclick="proceedToCheckout()">
+                <span>Commander</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
         </div>
+    </div>
+
+    <!-- Success Notifications -->
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p>Chargement...</p>
     </div>
 
     <script src="script.js"></script>

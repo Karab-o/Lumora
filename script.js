@@ -1,62 +1,246 @@
 // Global Variables
 let cart = [];
-let currentCarouselIndex = 0;
-const productsPerView = window.innerWidth <= 768 ? 1 : 3;
 let currentUser = null;
 let isAuthenticated = false;
-
-// Product Data
-const productData = {
-    fraise: {
-        name: "Chocolat Fraise",
-        price: 8.50,
-        description: "Notre chocolat noir 70% premium enrobé de morceaux de fraises séchées françaises. Un équilibre parfait entre l'amertume du cacao et la douceur fruitée.",
-        ingredients: "Cacao (70%), fraises séchées (15%), sucre de canne, beurre de cacao, lécithine de tournesol",
-        nutritional: "Calories: 534 kcal/100g | Protéines: 8.2g | Glucides: 35.6g | Lipides: 42.1g",
-        image: "https://images.unsplash.com/photo-1549007953-2f2dc0b24019?w=600&h=400&fit=crop"
-    },
-    mangue: {
-        name: "Chocolat Mangue",
-        price: 9.00,
-        description: "Chocolat au lait onctueux sublimé par des cubes de mangue exotique. Une évasion tropicale dans chaque bouchée.",
-        ingredients: "Chocolat au lait (65%), mangue séchée (20%), sucre, beurre de cacao, lait en poudre",
-        nutritional: "Calories: 548 kcal/100g | Protéines: 7.8g | Glucides: 38.2g | Lipides: 41.5g",
-        image: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=600&h=400&fit=crop"
-    },
-    framboises: {
-        name: "Chocolat Framboises",
-        price: 8.75,
-        description: "Chocolat blanc délicat parsemé de framboises lyophilisées. La douceur crémeuse rencontre l'acidité rafraîchissante.",
-        ingredients: "Chocolat blanc (70%), framboises lyophilisées (18%), sucre, beurre de cacao, lait en poudre",
-        nutritional: "Calories: 556 kcal/100g | Protéines: 6.9g | Glucides: 41.3g | Lipides: 43.2g",
-        image: "https://images.unsplash.com/photo-1548907040-4baa42d10919?w=600&h=400&fit=crop"
-    },
-    orange: {
-        name: "Chocolat Orange",
-        price: 8.25,
-        description: "Chocolat noir intense agrémenté de zestes d'orange confite. Un classique revisité avec des agrumes de Provence.",
-        ingredients: "Chocolat noir (75%), zestes d'orange confite (12%), sucre, beurre de cacao, huile d'orange",
-        nutritional: "Calories: 528 kcal/100g | Protéines: 8.8g | Glucides: 33.1g | Lipides: 41.8g",
-        image: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=600&h=400&fit=crop"
-    }
+let currentPage = 'home';
+let currentCarouselIndex = 0;
+let barCustomization = {
+    chocolate: null,
+    fruits: [],
+    extras: [],
+    quantity: 1,
+    basePrice: 12.00
 };
 
-// Authentication Functions
-function initializeGoogleAuth() {
-    // Initialize Google Sign-In
-    window.google?.accounts?.id?.initialize({
-        client_id: 'your-google-client-id.apps.googleusercontent.com',
-        callback: handleCredentialResponse,
-        auto_select: false,
-        cancel_on_tap_outside: false
-    });
+// Product catalog
+const productCatalog = [
+    {
+        id: 'fraise-premium',
+        name: 'Chocolat Fraise Premium',
+        price: 8.50,
+        category: 'noir',
+        image: 'https://images.unsplash.com/photo-1549007953-2f2dc0b24019?w=400&h=300&fit=crop',
+        description: 'Chocolat noir 70% et fraises françaises lyophilisées',
+        ingredients: 'Cacao 70%, fraises lyophilisées, sucre de canne bio',
+        nutritional: '534 kcal/100g | Protéines: 8.2g | Glucides: 35.6g',
+        isVegan: false,
+        isGlutenFree: true
+    },
+    {
+        id: 'mangue-passion',
+        name: 'Délice Mangue Passion',
+        price: 9.00,
+        category: 'lait',
+        image: 'https://images.unsplash.com/photo-1511381939415-e44015466834?w=400&h=300&fit=crop',
+        description: 'Chocolat au lait onctueux et mangue tropicale',
+        ingredients: 'Chocolat au lait 65%, mangue séchée, lait en poudre',
+        nutritional: '548 kcal/100g | Protéines: 7.8g | Glucides: 38.2g',
+        isVegan: false,
+        isGlutenFree: true
+    },
+    {
+        id: 'framboises-blanc',
+        name: 'Chocolat Blanc Framboises',
+        price: 8.75,
+        category: 'blanc',
+        image: 'https://images.unsplash.com/photo-1548907040-4baa42d10919?w=400&h=300&fit=crop',
+        description: 'Chocolat blanc délicat et framboises acidulées',
+        ingredients: 'Chocolat blanc 70%, framboises lyophilisées',
+        nutritional: '556 kcal/100g | Protéines: 6.9g | Glucides: 41.3g',
+        isVegan: false,
+        isGlutenFree: true
+    },
+    {
+        id: 'orange-noir',
+        name: 'Chocolat Noir Orange',
+        price: 8.25,
+        category: 'noir',
+        image: 'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=400&h=300&fit=crop',
+        description: 'Chocolat noir intense et zestes d\'orange confits',
+        ingredients: 'Cacao 75%, zestes d\'orange bio, sucre de canne',
+        nutritional: '528 kcal/100g | Protéines: 8.8g | Glucides: 33.1g',
+        isVegan: true,
+        isGlutenFree: true
+    },
+    {
+        id: 'myrtilles-lait',
+        name: 'Chocolat Lait Myrtilles',
+        price: 9.25,
+        category: 'lait',
+        image: 'https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?w=400&h=300&fit=crop',
+        description: 'Chocolat au lait gourmand et myrtilles sauvages',
+        ingredients: 'Chocolat au lait 60%, myrtilles séchées',
+        nutritional: '542 kcal/100g | Protéines: 7.5g | Glucides: 36.8g',
+        isVegan: false,
+        isGlutenFree: true
+    },
+    {
+        id: 'ananas-coco',
+        name: 'Exotique Ananas Coco',
+        price: 9.50,
+        category: 'blanc',
+        image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop',
+        description: 'Chocolat blanc tropical à l\'ananas et coco',
+        ingredients: 'Chocolat blanc, ananas séché, noix de coco râpée',
+        nutritional: '562 kcal/100g | Protéines: 6.2g | Glucides: 42.1g',
+        isVegan: false,
+        isGlutenFree: true
+    }
+];
+
+// Promotional codes
+const promoCodes = {
+    'BIENVENUE20': { discount: 0.20, description: '20% de réduction' },
+    'FIDELITE10': { discount: 0.10, description: '10% de réduction fidélité' },
+    'NOEL25': { discount: 0.25, description: '25% de réduction Noël' }
+};
+
+// Initialize application
+document.addEventListener('DOMContentLoaded', function() {
+    initializeApp();
+});
+
+function initializeApp() {
+    checkAuthStatus();
+    setupEventListeners();
+    initializeEmailJS();
+    setupPasswordStrengthMeter();
+    if (isAuthenticated) {
+        showApp();
+        loadProducts();
+        updateCartDisplay();
+    } else {
+        showWelcomePage();
+    }
 }
 
-function handleCredentialResponse(response) {
-    try {
-        // Decode JWT token (in production, verify on server)
-        const payload = JSON.parse(atob(response.credential.split('.')[1]));
+// Authentication Functions
+function checkAuthStatus() {
+    const savedUser = localStorage.getItem('chocolat-user');
+    const authStatus = localStorage.getItem('chocolat-auth');
+    
+    if (authStatus === 'true' && savedUser) {
+        try {
+            currentUser = JSON.parse(savedUser);
+            isAuthenticated = true;
+        } catch (error) {
+            console.error('Error parsing user data:', error);
+            localStorage.removeItem('chocolat-user');
+            localStorage.removeItem('chocolat-auth');
+        }
+    }
+}
+
+function showWelcomePage() {
+    document.getElementById('welcomePage').style.display = 'block';
+    document.getElementById('appContainer').style.display = 'none';
+}
+
+function showApp() {
+    document.getElementById('welcomePage').style.display = 'none';
+    document.getElementById('appContainer').style.display = 'block';
+    updateUserInterface();
+    showPage('home');
+}
+
+function showAuthModal(type) {
+    const modal = document.getElementById('authModal');
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    
+    if (type === 'login') {
+        loginForm.style.display = 'block';
+        signupForm.style.display = 'none';
+    } else {
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'block';
+    }
+    
+    modal.classList.add('active');
+    playSound('modal-open');
+}
+
+function hideAuthModal() {
+    document.getElementById('authModal').classList.remove('active');
+}
+
+function switchAuthForm(type) {
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    
+    if (type === 'login') {
+        loginForm.style.display = 'block';
+        signupForm.style.display = 'none';
+    } else {
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'block';
+    }
+}
+
+function handleLogin(event) {
+    event.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const rememberMe = document.getElementById('rememberMe').checked;
+    
+    showLoading();
+    
+    // Simulate login process
+    setTimeout(() => {
+        currentUser = {
+            id: 'user-' + Date.now(),
+            name: email.split('@')[0],
+            email: email,
+            loginMethod: 'email',
+            rememberMe: rememberMe
+        };
         
+        authenticateUser();
+        hideLoading();
+    }, 1500);
+}
+
+function handleSignup(event) {
+    event.preventDefault();
+    const firstName = document.getElementById('signupFirstName').value;
+    const lastName = document.getElementById('signupLastName').value;
+    const email = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const agreeTerms = document.getElementById('agreeTerms').checked;
+    const subscribeNewsletter = document.getElementById('subscribeNewsletter').checked;
+    
+    if (password !== confirmPassword) {
+        showNotification('Les mots de passe ne correspondent pas', 'error');
+        return;
+    }
+    
+    if (!agreeTerms) {
+        showNotification('Veuillez accepter les conditions d\'utilisation', 'error');
+        return;
+    }
+    
+    showLoading();
+    
+    // Simulate signup process
+    setTimeout(() => {
+        currentUser = {
+            id: 'user-' + Date.now(),
+            name: `${firstName} ${lastName}`,
+            email: email,
+            loginMethod: 'email',
+            newsletter: subscribeNewsletter
+        };
+        
+        authenticateUser();
+        hideLoading();
+        showNotification('Compte créé avec succès ! Bienvenue !', 'success');
+    }, 2000);
+}
+
+function handleGoogleLogin(response) {
+    try {
+        const payload = JSON.parse(atob(response.credential.split('.')[1]));
         currentUser = {
             id: payload.sub,
             name: payload.name,
@@ -64,364 +248,616 @@ function handleCredentialResponse(response) {
             picture: payload.picture,
             loginMethod: 'google'
         };
-        
         authenticateUser();
     } catch (error) {
-        console.error('Error processing Google credential:', error);
-        alert('Erreur lors de la connexion Google. Veuillez réessayer.');
+        console.error('Google login error:', error);
+        showNotification('Erreur de connexion Google', 'error');
     }
 }
 
-function demoLogin() {
-    // Demo login for testing purposes
+function handleDemoLogin() {
     currentUser = {
         id: 'demo-user',
         name: 'Utilisateur Démo',
-        email: 'demo@chocolatfruitier.com',
-        picture: null,
+        email: 'demo@chocolatfruitier.fr',
         loginMethod: 'demo'
     };
-    
     authenticateUser();
 }
 
 function authenticateUser() {
     isAuthenticated = true;
+    localStorage.setItem('chocolat-user', JSON.stringify(currentUser));
+    localStorage.setItem('chocolat-auth', 'true');
     
-    // Save user session
-    localStorage.setItem('chocolat-fruitier-user', JSON.stringify(currentUser));
-    localStorage.setItem('chocolat-fruitier-auth', 'true');
+    hideAuthModal();
+    showApp();
     
-    // Hide auth landing and show main website
-    hideAuthLanding();
-    
-    // Update user welcome message
-    updateUserInterface();
-    
-    // Play success sound
-    playSound('success');
-    
-    // Show welcome notification
-    showWelcomeNotification();
-}
-
-function hideAuthLanding() {
-    const authLanding = document.getElementById('authLanding');
-    const mainWebsite = document.getElementById('mainWebsite');
-    
-    authLanding.style.animation = 'fadeOut 0.5s ease-out forwards';
-    
+    // Welcome notification
     setTimeout(() => {
-        authLanding.style.display = 'none';
-        mainWebsite.style.display = 'block';
-        mainWebsite.style.animation = 'fadeIn 0.5s ease-out';
-    }, 500);
-}
-
-function updateUserInterface() {
-    const userName = document.getElementById('userName');
-    const userAvatar = document.getElementById('userAvatar');
-    
-    if (currentUser) {
-        userName.textContent = currentUser.name;
-        
-        // Set user avatar
-        if (currentUser.picture) {
-            userAvatar.innerHTML = `<img src="${currentUser.picture}" alt="${currentUser.name}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
-        } else {
-            // Use first letter of name as avatar
-            userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
-        }
-    }
-}
-
-function showWelcomeNotification() {
-    // Create and show welcome notification
-    const notification = document.createElement('div');
-    notification.className = 'welcome-notification';
-    notification.innerHTML = `
-        <div class="notification-content">
-            <h4>Bienvenue ${currentUser.name} !</h4>
-            <p>Profitez de votre expérience personnalisée chez Chocolat Fruitier.</p>
-        </div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.classList.add('show');
-    }, 100);
-    
-    setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => {
-            notification.remove();
-        }, 300);
-    }, 4000);
+        showNotification(`Bienvenue ${currentUser.name} !`, 'success');
+    }, 1000);
 }
 
 function logout() {
-    const confirmation = confirm('Êtes-vous sûr de vouloir vous déconnecter ?');
-    
-    if (confirmation) {
-        // Clear user data
+    if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
         currentUser = null;
         isAuthenticated = false;
-        
-        // Clear storage
-        localStorage.removeItem('chocolat-fruitier-user');
-        localStorage.removeItem('chocolat-fruitier-auth');
-        
-        // Clear cart (optional)
         cart = [];
-        localStorage.removeItem('chocolat-fruitier-cart');
         
-        // Sign out from Google
-        if (window.google?.accounts?.id) {
-            window.google.accounts.id.disableAutoSelect();
-        }
+        localStorage.removeItem('chocolat-user');
+        localStorage.removeItem('chocolat-auth');
+        localStorage.removeItem('chocolat-cart');
         
-        // Reload page to show auth overlay
-        window.location.reload();
+        showWelcomePage();
+        showNotification('Vous avez été déconnecté', 'info');
     }
 }
 
-function checkAuthenticationStatus() {
-    // Check if user is already authenticated
-    const savedUser = localStorage.getItem('chocolat-fruitier-user');
-    const authStatus = localStorage.getItem('chocolat-fruitier-auth');
+function updateUserInterface() {
+    if (!currentUser) return;
     
-    if (authStatus === 'true' && savedUser) {
-        try {
-            currentUser = JSON.parse(savedUser);
-            isAuthenticated = true;
-            
-            // Hide auth landing immediately
-            const authLanding = document.getElementById('authLanding');
-            const mainWebsite = document.getElementById('mainWebsite');
-            
-            authLanding.style.display = 'none';
-            mainWebsite.style.display = 'block';
-            
-            // Update UI
-            setTimeout(() => {
-                updateUserInterface();
-            }, 100);
-            
-        } catch (error) {
-            console.error('Error parsing saved user data:', error);
-            // Clear corrupted data
-            localStorage.removeItem('chocolat-fruitier-user');
-            localStorage.removeItem('chocolat-fruitier-auth');
-        }
-    }
-}
-
-// Protect interactive functions - require authentication
-function requireAuth(callback) {
-    if (!isAuthenticated) {
-        alert('Veuillez vous connecter pour accéder à cette fonctionnalité.');
-        return false;
-    }
-    return callback();
-}
-
-// DOM Content Loaded
-document.addEventListener('DOMContentLoaded', function() {
-    initializeWebsite();
-});
-
-// Initialize Website
-function initializeWebsite() {
-    checkAuthenticationStatus();
-    setupEventListeners();
-    setupScrollAnimations();
-    setupNavbarScroll();
-    setupCarousel();
-    loadCartFromStorage();
-    addSoundEffects();
-    initializeGoogleAuth();
-}
-
-// Event Listeners
-function setupEventListeners() {
-    // Navigation
-    document.getElementById('hamburger').addEventListener('click', toggleMobileMenu);
-    document.getElementById('cartBtn').addEventListener('click', openCart);
+    const userName = document.getElementById('userName');
+    const userAvatar = document.getElementById('userAvatar');
     
-    // Smooth scrolling for navigation links
+    userName.textContent = currentUser.name;
+    
+    if (currentUser.picture) {
+        userAvatar.innerHTML = `<img src="${currentUser.picture}" alt="${currentUser.name}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+    } else {
+        userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+    }
+}
+
+// Password strength checker
+function setupPasswordStrengthMeter() {
+    // This will be called during initialization
+}
+
+function checkPasswordStrength(password) {
+    const strengthBar = document.querySelector('.strength-fill');
+    const strengthText = document.querySelector('.strength-text');
+    
+    let strength = 0;
+    let feedback = '';
+    
+    if (password.length >= 8) strength += 25;
+    if (/[a-z]/.test(password)) strength += 25;
+    if (/[A-Z]/.test(password)) strength += 25;
+    if (/[0-9]/.test(password)) strength += 25;
+    
+    if (strength === 0) {
+        feedback = 'Saisissez un mot de passe';
+        strengthBar.style.background = '#ddd';
+    } else if (strength <= 25) {
+        feedback = 'Faible';
+        strengthBar.style.background = '#ff6b6b';
+    } else if (strength <= 50) {
+        feedback = 'Moyen';
+        strengthBar.style.background = '#ffa726';
+    } else if (strength <= 75) {
+        feedback = 'Fort';
+        strengthBar.style.background = '#66bb6a';
+    } else {
+        feedback = 'Très fort';
+        strengthBar.style.background = '#4caf50';
+    }
+    
+    strengthBar.style.width = strength + '%';
+    strengthText.textContent = feedback;
+}
+
+function checkPasswordMatch() {
+    const password = document.getElementById('signupPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const matchDiv = document.getElementById('passwordMatch');
+    
+    if (confirmPassword.length === 0) {
+        matchDiv.textContent = '';
+        return;
+    }
+    
+    if (password === confirmPassword) {
+        matchDiv.textContent = '✓ Les mots de passe correspondent';
+        matchDiv.style.color = '#4caf50';
+    } else {
+        matchDiv.textContent = '✗ Les mots de passe ne correspondent pas';
+        matchDiv.style.color = '#ff6b6b';
+    }
+}
+
+function togglePassword(inputId) {
+    const input = document.getElementById(inputId);
+    const button = input.nextElementSibling.nextElementSibling;
+    const icon = button.querySelector('i');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fas fa-eye-slash';
+    } else {
+        input.type = 'password';
+        icon.className = 'fas fa-eye';
+    }
+}
+
+// Page Navigation
+function showPage(pageId) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(page => {
+        page.style.display = 'none';
+        page.classList.remove('active');
+    });
+    
+    // Show selected page
+    const targetPage = document.getElementById(pageId + 'Page');
+    if (targetPage) {
+        targetPage.style.display = 'block';
+        targetPage.classList.add('active');
+        currentPage = pageId;
+    }
+    
+    // Update navigation
     document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', handleNavClick);
+        link.classList.remove('active');
     });
-
-    // Newsletter form
-    document.querySelector('.newsletter-form').addEventListener('submit', handleNewsletterSubmit);
-
-    // Mobile hamburger animation
-    document.getElementById('hamburger').addEventListener('click', function() {
-        this.classList.toggle('active');
-    });
-
-    // Close modals when clicking outside
-    window.addEventListener('click', handleOutsideClick);
     
-    // Keyboard navigation
-    document.addEventListener('keydown', handleKeyboardNavigation);
-}
-
-// Smooth Scrolling
-function scrollToSection(sectionId) {
-    const section = document.getElementById(sectionId);
-    if (section) {
-        const offsetTop = section.offsetTop - 80; // Account for fixed navbar
-        window.scrollTo({
-            top: offsetTop,
-            behavior: 'smooth'
-        });
+    const activeLink = document.querySelector(`[onclick="showPage('${pageId}')"]`);
+    if (activeLink) {
+        activeLink.classList.add('active');
     }
-}
-
-function handleNavClick(e) {
-    e.preventDefault();
-    const href = e.target.getAttribute('href');
-    const sectionId = href.substring(1);
-    scrollToSection(sectionId);
     
-    // Close mobile menu if open
-    document.querySelector('.nav-menu').classList.remove('active');
-    document.getElementById('hamburger').classList.remove('active');
+    // Load page-specific content
+    switch (pageId) {
+        case 'products':
+            loadProducts();
+            break;
+        case 'order':
+            initializeBarBuilder();
+            break;
+        case 'gifts':
+            loadGifts();
+            break;
+        case 'contact':
+            // Contact page is static
+            break;
+    }
+    
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Navbar Scroll Effect
-function setupNavbarScroll() {
-    window.addEventListener('scroll', function() {
-        const navbar = document.getElementById('navbar');
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
+// Products Page
+function loadProducts() {
+    const productsGrid = document.getElementById('productsGrid');
+    if (!productsGrid) return;
+    
+    productsGrid.innerHTML = '';
+    
+    productCatalog.forEach(product => {
+        const productCard = createProductCard(product);
+        productsGrid.appendChild(productCard);
+    });
+    
+    // Setup filter buttons
+    setupProductFilters();
+}
+
+function createProductCard(product) {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.dataset.category = product.category;
+    card.dataset.vegan = product.isVegan;
+    
+    card.innerHTML = `
+        <div class="product-image">
+            <img src="${product.image}" alt="${product.name}" loading="lazy">
+            <div class="product-overlay">
+                <button class="quick-view-btn" onclick="openProductModal('${product.id}')">
+                    <i class="fas fa-eye"></i> Voir détails
+                </button>
+                <button class="add-to-cart-btn" onclick="addToCart('${product.id}')">
+                    <i class="fas fa-cart-plus"></i> Ajouter
+                </button>
+            </div>
+            ${product.isVegan ? '<div class="product-badge vegan">Vegan</div>' : ''}
+            ${product.isGlutenFree ? '<div class="product-badge gluten-free">Sans Gluten</div>' : ''}
+        </div>
+        <div class="product-info">
+            <h3>${product.name}</h3>
+            <p>${product.description}</p>
+            <div class="product-price">${product.price.toFixed(2)}€</div>
+            <div class="product-rating">
+                <span class="stars">★★★★★</span>
+                <span class="rating-count">(${Math.floor(Math.random() * 50) + 10})</span>
+            </div>
+        </div>
+    `;
+    
+    return card;
+}
+
+function setupProductFilters() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const filter = this.dataset.filter;
+            
+            // Update active button
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter products
+            filterProducts(filter);
+        });
+    });
+}
+
+function filterProducts(filter) {
+    const productCards = document.querySelectorAll('.product-card');
+    
+    productCards.forEach(card => {
+        let show = false;
+        
+        switch (filter) {
+            case 'all':
+                show = true;
+                break;
+            case 'vegan':
+                show = card.dataset.vegan === 'true';
+                break;
+            default:
+                show = card.dataset.category === filter;
+        }
+        
+        if (show) {
+            card.style.display = 'block';
+            card.style.animation = 'fadeIn 0.5s ease-out';
         } else {
-            navbar.classList.remove('scrolled');
+            card.style.display = 'none';
         }
     });
 }
 
-// Scroll Animations
-function setupScrollAnimations() {
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
+function openProductModal(productId) {
+    const product = productCatalog.find(p => p.id === productId);
+    if (!product) return;
+    
+    // Create product modal HTML
+    const modalHTML = `
+        <div class="product-detail">
+            <div class="product-detail-image">
+                <img src="${product.image}" alt="${product.name}">
+            </div>
+            <div class="product-detail-info">
+                <h2>${product.name}</h2>
+                <div class="product-price-large">${product.price.toFixed(2)}€</div>
+                <p class="product-description">${product.description}</p>
                 
-                // Add staggered animation for grid items
-                if (entry.target.classList.contains('ingredients-grid') ||
-                    entry.target.classList.contains('testimonials-grid')) {
-                    const items = entry.target.children;
-                    Array.from(items).forEach((item, index) => {
-                        setTimeout(() => {
-                            item.style.animation = `slideInUp 0.6s ease-out ${index * 0.1}s forwards`;
-                        }, index * 100);
-                    });
-                }
-            }
+                <div class="product-specs">
+                    <h4>Ingrédients</h4>
+                    <p>${product.ingredients}</p>
+                    
+                    <h4>Valeurs nutritionnelles</h4>
+                    <p>${product.nutritional}</p>
+                    
+                    <div class="product-badges">
+                        ${product.isVegan ? '<span class="badge vegan">Vegan</span>' : ''}
+                        ${product.isGlutenFree ? '<span class="badge gluten-free">Sans Gluten</span>' : ''}
+                    </div>
+                </div>
+                
+                <div class="quantity-selector">
+                    <label>Quantité:</label>
+                    <div class="quantity-controls">
+                        <button onclick="changeProductQuantity(-1, '${productId}')">-</button>
+                        <input type="number" id="productQuantity" value="1" min="1" max="10">
+                        <button onclick="changeProductQuantity(1, '${productId}')">+</button>
+                    </div>
+                </div>
+                
+                <button class="add-to-cart-large" onclick="addToCartFromModal('${productId}')">
+                    Ajouter au panier - ${product.price.toFixed(2)}€
+                    <i class="fas fa-cart-plus"></i>
+                </button>
+                
+                <div class="product-share">
+                    <h5>Partager ce produit</h5>
+                    <div class="share-buttons">
+                        <button onclick="shareProduct('facebook', '${productId}')"><i class="fab fa-facebook"></i></button>
+                        <button onclick="shareProduct('twitter', '${productId}')"><i class="fab fa-twitter"></i></button>
+                        <button onclick="shareProduct('pinterest', '${productId}')"><i class="fab fa-pinterest"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Show modal (you'll need to implement the modal display logic)
+    showModal(modalHTML);
+}
+
+// Custom Bar Builder
+function initializeBarBuilder() {
+    resetBarCustomization();
+    updateBarPreview();
+    setupBuilderInteractions();
+}
+
+function resetBarCustomization() {
+    barCustomization = {
+        chocolate: null,
+        fruits: [],
+        extras: [],
+        quantity: 1,
+        basePrice: 12.00
+    };
+}
+
+function setupBuilderInteractions() {
+    // Chocolate selection
+    document.querySelectorAll('.option-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const chocolateType = this.dataset.chocolate;
+            selectChocolate(chocolateType);
         });
-    }, observerOptions);
-
-    // Add fade-in class to sections and observe them
-    const sections = document.querySelectorAll('.products-section, .ingredients-section, .testimonials-section, .contact-section');
-    sections.forEach(section => {
-        section.classList.add('fade-in');
-        observer.observe(section);
     });
-
-    // Observe individual cards for staggered animations
-    const cards = document.querySelectorAll('.product-card, .ingredient-card, .testimonial-card');
-    cards.forEach(card => {
-        card.classList.add('fade-in');
-        observer.observe(card);
+    
+    // Fruit selection
+    document.querySelectorAll('.fruit-option').forEach(option => {
+        option.addEventListener('click', function() {
+            const fruit = this.dataset.fruit;
+            toggleFruit(fruit);
+        });
+    });
+    
+    // Extra selection
+    document.querySelectorAll('.extra-option').forEach(option => {
+        option.addEventListener('click', function() {
+            const extra = this.dataset.extra;
+            toggleExtra(extra);
+        });
     });
 }
 
-// Mobile Menu Toggle
-function toggleMobileMenu() {
-    const navMenu = document.querySelector('.nav-menu');
-    navMenu.classList.toggle('active');
+function selectChocolate(type) {
+    // Remove previous selection
+    document.querySelectorAll('.option-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    // Add selection to clicked card
+    document.querySelector(`[data-chocolate="${type}"]`).classList.add('selected');
+    
+    barCustomization.chocolate = type;
+    updateBarPreview();
 }
 
-// Carousel Functions
-function setupCarousel() {
-    updateCarouselView();
+function toggleFruit(fruit) {
+    const option = document.querySelector(`[data-fruit="${fruit}"]`);
+    const index = barCustomization.fruits.indexOf(fruit);
     
-    // Auto-rotate carousel
-    setInterval(function() {
-        moveCarousel(1);
-    }, 5000);
-}
-
-function moveCarousel(direction) {
-    const carousel = document.getElementById('productCarousel');
-    const cards = carousel.children;
-    const maxIndex = cards.length - productsPerView;
-    
-    currentCarouselIndex += direction;
-    
-    if (currentCarouselIndex > maxIndex) {
-        currentCarouselIndex = 0;
-    } else if (currentCarouselIndex < 0) {
-        currentCarouselIndex = maxIndex;
+    if (index > -1) {
+        // Remove fruit
+        barCustomization.fruits.splice(index, 1);
+        option.classList.remove('selected');
+    } else {
+        // Add fruit (max 3)
+        if (barCustomization.fruits.length < 3) {
+            barCustomization.fruits.push(fruit);
+            option.classList.add('selected');
+        } else {
+            showNotification('Maximum 3 fruits par barre', 'info');
+        }
     }
     
-    updateCarouselView();
+    updateBarPreview();
 }
 
-function updateCarouselView() {
-    const carousel = document.getElementById('productCarousel');
-    const cardWidth = 320; // 300px + 20px gap
-    const translateX = -currentCarouselIndex * cardWidth;
+function toggleExtra(extra) {
+    const option = document.querySelector(`[data-extra="${extra}"]`);
+    const index = barCustomization.extras.indexOf(extra);
     
-    carousel.style.transform = `translateX(${translateX}px)`;
+    if (index > -1) {
+        barCustomization.extras.splice(index, 1);
+        option.classList.remove('selected');
+    } else {
+        if (barCustomization.extras.length < 2) {
+            barCustomization.extras.push(extra);
+            option.classList.add('selected');
+        } else {
+            showNotification('Maximum 2 extras par barre', 'info');
+        }
+    }
+    
+    updateBarPreview();
+}
+
+function updateBarPreview() {
+    const barName = document.getElementById('barName');
+    const ingredientsList = document.getElementById('ingredientsList');
+    const barPrice = document.getElementById('barPrice');
+    const barChocolate = document.getElementById('barChocolate');
+    const barToppings = document.getElementById('barToppings');
+    
+    // Update visual representation
+    if (barCustomization.chocolate) {
+        const chocolateColors = {
+            noir: '#3d2914',
+            lait: '#8b4513',
+            blanc: '#f5f5dc'
+        };
+        if (barChocolate) {
+            barChocolate.style.background = chocolateColors[barCustomization.chocolate] || '#8b4513';
+        }
+    }
+    
+    // Update name and ingredients
+    if (barCustomization.chocolate) {
+        const chocolateNames = {
+            noir: 'Chocolat Noir',
+            lait: 'Chocolat au Lait',
+            blanc: 'Chocolat Blanc'
+        };
+        
+        let name = chocolateNames[barCustomization.chocolate];
+        if (barCustomization.fruits.length > 0) {
+            name += ` aux ${barCustomization.fruits.join(', ')}`;
+        }
+        
+        barName.textContent = name;
+        
+        let ingredients = [chocolateNames[barCustomization.chocolate]];
+        ingredients = ingredients.concat(barCustomization.fruits);
+        ingredients = ingredients.concat(barCustomization.extras);
+        
+        ingredientsList.innerHTML = `<p><strong>Ingrédients:</strong> ${ingredients.join(', ')}</p>`;
+    } else {
+        barName.textContent = 'Personnalisez votre barre';
+        ingredientsList.innerHTML = '<p>Sélectionnez vos ingrédients</p>';
+    }
+    
+    // Calculate and update price
+    const price = calculateBarPrice();
+    barPrice.textContent = `${price.toFixed(2)}€`;
+}
+
+function calculateBarPrice() {
+    let total = barCustomization.basePrice;
+    
+    // Add fruit costs
+    const fruitPrices = {
+        fraise: 2.0,
+        mangue: 2.5,
+        framboises: 3.0,
+        orange: 1.5,
+        myrtilles: 3.0,
+        ananas: 2.0
+    };
+    
+    barCustomization.fruits.forEach(fruit => {
+        total += fruitPrices[fruit] || 2.0;
+    });
+    
+    // Add extra costs
+    const extraPrices = {
+        nuts: 2.0,
+        caramel: 1.5,
+        coconut: 1.0
+    };
+    
+    barCustomization.extras.forEach(extra => {
+        total += extraPrices[extra] || 1.0;
+    });
+    
+    // White chocolate premium
+    if (barCustomization.chocolate === 'blanc') {
+        total += 1.0;
+    }
+    
+    return total * barCustomization.quantity;
+}
+
+function changeQuantity(delta) {
+    const quantityInput = document.getElementById('barQuantity');
+    let newQuantity = parseInt(quantityInput.value) + delta;
+    
+    if (newQuantity < 1) newQuantity = 1;
+    if (newQuantity > 10) newQuantity = 10;
+    
+    quantityInput.value = newQuantity;
+    barCustomization.quantity = newQuantity;
+    updateBarPreview();
+}
+
+function addCustomBarToCart() {
+    if (!barCustomization.chocolate) {
+        showNotification('Veuillez choisir un type de chocolat', 'error');
+        return;
+    }
+    
+    if (barCustomization.fruits.length === 0) {
+        showNotification('Veuillez sélectionner au moins un fruit', 'error');
+        return;
+    }
+    
+    const customBar = {
+        id: 'custom-' + Date.now(),
+        name: document.getElementById('barName').textContent,
+        price: calculateBarPrice() / barCustomization.quantity,
+        quantity: barCustomization.quantity,
+        customization: { ...barCustomization },
+        isCustom: true
+    };
+    
+    cart.push(customBar);
+    updateCartDisplay();
+    saveCartToStorage();
+    
+    showNotification('Barre personnalisée ajoutée au panier !', 'success');
+    
+    // Reset builder
+    setTimeout(() => {
+        initializeBarBuilder();
+    }, 1000);
 }
 
 // Shopping Cart Functions
-function addToCart(id, name, price) {
-    return requireAuth(() => {
-        const existingItem = cart.find(item => item.id === id);
-        
-        if (existingItem) {
-            existingItem.quantity += 1;
-        } else {
-            cart.push({
-                id: id,
-                name: name,
-                price: price,
-                quantity: 1
-            });
-        }
-        
-        updateCartDisplay();
-        saveCartToStorage();
-        showAddToCartAnimation();
-        playSound('add-to-cart');
-        return true;
-    });
-}
-
-function removeFromCart(id) {
-    cart = cart.filter(item => item.id !== id);
+function addToCart(productId, quantity = 1) {
+    const product = productCatalog.find(p => p.id === productId);
+    if (!product) return;
+    
+    const existingItem = cart.find(item => item.id === productId && !item.isCustom);
+    
+    if (existingItem) {
+        existingItem.quantity += quantity;
+    } else {
+        cart.push({
+            id: productId,
+            name: product.name,
+            price: product.price,
+            quantity: quantity,
+            image: product.image
+        });
+    }
+    
     updateCartDisplay();
     saveCartToStorage();
+    showNotification(`${product.name} ajouté au panier`, 'success');
+    
+    // Cart animation
+    animateCartButton();
 }
 
-function updateCartQuantity(id, newQuantity) {
-    const item = cart.find(item => item.id === id);
+function removeFromCart(itemId, isCustom = false) {
+    const index = cart.findIndex(item => {
+        if (isCustom) {
+            return item.id === itemId && item.isCustom;
+        }
+        return item.id === itemId && !item.isCustom;
+    });
+    
+    if (index > -1) {
+        cart.splice(index, 1);
+        updateCartDisplay();
+        saveCartToStorage();
+        showNotification('Produit retiré du panier', 'info');
+    }
+}
+
+function updateCartQuantity(itemId, newQuantity, isCustom = false) {
+    const item = cart.find(item => {
+        if (isCustom) {
+            return item.id === itemId && item.isCustom;
+        }
+        return item.id === itemId && !item.isCustom;
+    });
+    
     if (item) {
         if (newQuantity <= 0) {
-            removeFromCart(id);
+            removeFromCart(itemId, isCustom);
         } else {
-            item.quantity = newQuantity;
+            item.quantity = Math.min(newQuantity, 10);
             updateCartDisplay();
             saveCartToStorage();
         }
@@ -431,214 +867,291 @@ function updateCartQuantity(id, newQuantity) {
 function updateCartDisplay() {
     const cartCount = document.getElementById('cartCount');
     const cartItems = document.getElementById('cartItems');
+    const cartSubtotal = document.getElementById('cartSubtotal');
     const cartTotal = document.getElementById('cartTotal');
+    const cartFooter = document.getElementById('cartFooter');
     
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     
     cartCount.textContent = totalItems;
-    cartTotal.textContent = `${totalPrice.toFixed(2)}€`;
     
     if (cart.length === 0) {
-        cartItems.innerHTML = '<p class="empty-cart">Votre panier est vide</p>';
+        cartItems.innerHTML = `
+            <div class="empty-cart">
+                <i class="fas fa-shopping-cart"></i>
+                <p>Votre panier est vide</p>
+                <button onclick="showPage('products')">Découvrir nos produits</button>
+            </div>
+        `;
+        cartFooter.style.display = 'none';
     } else {
         cartItems.innerHTML = cart.map(item => `
             <div class="cart-item">
+                <div class="cart-item-image">
+                    <img src="${item.image || '/api/placeholder/60/60'}" alt="${item.name}">
+                </div>
                 <div class="cart-item-info">
                     <h4>${item.name}</h4>
-                    <p>${item.price.toFixed(2)}€ x ${item.quantity}</p>
+                    <p>${item.price.toFixed(2)}€</p>
+                    ${item.isCustom ? '<span class="custom-badge">Personnalisé</span>' : ''}
                 </div>
                 <div class="cart-item-controls">
-                    <button onclick="updateCartQuantity('${item.id}', ${item.quantity - 1})">-</button>
+                    <button onclick="updateCartQuantity('${item.id}', ${item.quantity - 1}, ${item.isCustom || false})">-</button>
                     <span>${item.quantity}</span>
-                    <button onclick="updateCartQuantity('${item.id}', ${item.quantity + 1})">+</button>
-                    <button onclick="removeFromCart('${item.id}')" class="remove-btn">×</button>
+                    <button onclick="updateCartQuantity('${item.id}', ${item.quantity + 1}, ${item.isCustom || false})">+</button>
+                    <button onclick="removeFromCart('${item.id}', ${item.isCustom || false})" class="remove-btn">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </div>
             </div>
         `).join('');
+        
+        cartSubtotal.textContent = `${subtotal.toFixed(2)}€`;
+        cartTotal.textContent = `${calculateCartTotal().toFixed(2)}€`;
+        cartFooter.style.display = 'block';
     }
 }
 
-function openCart() {
-    return requireAuth(() => {
-        document.getElementById('cartModal').classList.add('active');
+function calculateCartTotal() {
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const discount = getCurrentDiscount();
+    const shipping = subtotal > 50 ? 0 : 5.90;
+    
+    return Math.max(0, subtotal - discount + shipping);
+}
+
+function getCurrentDiscount() {
+    const discountElement = document.getElementById('cartDiscount');
+    if (discountElement && discountElement.parentElement.style.display !== 'none') {
+        const discountText = discountElement.textContent.replace('€', '').replace('-', '');
+        return parseFloat(discountText) || 0;
+    }
+    return 0;
+}
+
+function toggleCart() {
+    const cartSidebar = document.getElementById('cartSidebar');
+    cartSidebar.classList.toggle('active');
+    
+    if (cartSidebar.classList.contains('active')) {
         playSound('modal-open');
-        return true;
-    });
+    }
 }
 
-function closeCart() {
-    document.getElementById('cartModal').classList.remove('active');
+function animateCartButton() {
+    const cartBtn = document.getElementById('cartBtn');
+    cartBtn.style.animation = 'pulse 0.3s ease';
+    
+    setTimeout(() => {
+        cartBtn.style.animation = '';
+    }, 300);
 }
 
-function checkout() {
-    if (cart.length === 0) {
-        alert('Votre panier est vide !');
+function applyPromoCode(code) {
+    if (!code) {
+        code = document.getElementById('promoInput').value.toUpperCase();
+    }
+    
+    if (!code) {
+        showNotification('Veuillez saisir un code promo', 'error');
         return;
     }
     
-    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const confirmation = confirm(`Confirmer votre commande de ${total.toFixed(2)}€ ?`);
+    const promo = promoCodes[code];
+    if (!promo) {
+        showNotification('Code promo invalide', 'error');
+        return;
+    }
     
-    if (confirmation) {
-        // Simulate checkout process
-        showCheckoutAnimation();
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const discount = subtotal * promo.discount;
+    
+    // Update discount display
+    const discountLine = document.getElementById('discountLine');
+    const cartDiscount = document.getElementById('cartDiscount');
+    
+    discountLine.style.display = 'flex';
+    cartDiscount.textContent = `-${discount.toFixed(2)}€`;
+    
+    // Update total
+    updateCartDisplay();
+    
+    showNotification(`Code promo appliqué : ${promo.description}`, 'success');
+    document.getElementById('promoInput').value = '';
+}
+
+function proceedToCheckout() {
+    if (cart.length === 0) {
+        showNotification('Votre panier est vide', 'error');
+        return;
+    }
+    
+    const total = calculateCartTotal();
+    
+    if (confirm(`Confirmer votre commande de ${total.toFixed(2)}€ ?`)) {
+        showLoading();
+        
         setTimeout(() => {
-            alert('Merci pour votre commande ! Vous recevrez un email de confirmation.');
+            // Simulate order processing
+            const orderId = 'CF' + Date.now().toString().slice(-6);
+            
+            showNotification(`Commande ${orderId} confirmée ! Merci pour votre achat.`, 'success');
+            
+            // Clear cart
             cart = [];
             updateCartDisplay();
             saveCartToStorage();
-            closeCart();
+            toggleCart();
+            hideLoading();
+            
+            // Send confirmation email (if EmailJS is set up)
+            sendOrderConfirmation(orderId, total);
         }, 2000);
     }
 }
 
-// Custom Bar Builder
-function addCustomBar() {
-    return requireAuth(() => {
-        const chocolateType = document.querySelector('input[name="chocolate"]:checked');
-        const selectedFruits = document.querySelectorAll('input[name="fruits"]:checked');
-        
-        if (!chocolateType) {
-            alert('Veuillez choisir un type de chocolat');
-            return;
-        }
-        
-        if (selectedFruits.length === 0) {
-            alert('Veuillez sélectionner au moins un fruit');
-            return;
-        }
-        
-        const fruits = Array.from(selectedFruits).map(input => input.value);
-        const customName = `Chocolat ${chocolateType.value} aux ${fruits.join(', ')}`;
-        
-        addToCart('custom', customName, 12.00);
-        
-        // Reset form
-        document.querySelectorAll('.custom-builder input').forEach(input => {
-            input.checked = false;
-        });
-        
-        alert('Votre création personnalisée a été ajoutée au panier !');
-        return true;
-    });
+// Contact Form
+function initializeEmailJS() {
+    // Initialize EmailJS (you'll need to add your public key)
+    // emailjs.init("YOUR_PUBLIC_KEY");
 }
 
-// Product Modal
-function openProductModal(productId) {
-    const product = productData[productId];
-    if (!product) return;
+function handleContactForm(event) {
+    event.preventDefault();
     
-    const modal = document.getElementById('productModal');
-    const modalBody = document.getElementById('modalBody');
+    const formData = {
+        name: document.getElementById('contactName').value,
+        email: document.getElementById('contactEmail').value,
+        subject: document.getElementById('contactSubject').value,
+        message: document.getElementById('contactMessage').value
+    };
     
-    modalBody.innerHTML = `
-        <div class="product-detail">
-            <img src="${product.image}" alt="${product.name}" class="product-detail-image">
-            <div class="product-detail-info">
-                <h2>${product.name}</h2>
-                <p class="product-price">${product.price.toFixed(2)}€</p>
-                <p class="product-description">${product.description}</p>
-                
-                <div class="product-details-section">
-                    <h3>Ingrédients</h3>
-                    <p>${product.ingredients}</p>
-                </div>
-                
-                <div class="product-details-section">
-                    <h3>Valeurs nutritionnelles</h3>
-                    <p>${product.nutritional}</p>
-                </div>
-                
-                <button class="add-to-cart-btn large" onclick="addToCart('${productId}', '${product.name}', ${product.price})">
-                    Ajouter au panier - ${product.price.toFixed(2)}€
-                </button>
-            </div>
-        </div>
-    `;
+    showLoading();
     
-    modal.classList.add('active');
-    playSound('modal-open');
-}
-
-function closeProductModal() {
-    document.getElementById('productModal').classList.remove('active');
-}
-
-// Newsletter
-function handleNewsletterSubmit(e) {
-    e.preventDefault();
-    const email = e.target.querySelector('input[type="email"]').value;
-    
-    // Simulate newsletter signup
-    showNewsletterAnimation();
+    // Simulate form submission
     setTimeout(() => {
-        alert('Merci pour votre inscription ! Vous recevrez bientôt nos dernières nouvelles.');
-        e.target.reset();
+        showNotification('Message envoyé avec succès ! Nous vous répondrons rapidement.', 'success');
+        event.target.reset();
+        hideLoading();
     }, 1500);
+    
+    // If EmailJS is configured:
+    // emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", formData)
+    //     .then(() => {
+    //         showNotification('Message envoyé avec succès !', 'success');
+    //         event.target.reset();
+    //     })
+    //     .catch(() => {
+    //         showNotification('Erreur lors de l\'envoi', 'error');
+    //     })
+    //     .finally(() => hideLoading());
 }
 
-// Storage Functions
+function sendOrderConfirmation(orderId, total) {
+    // This would send an order confirmation email
+    console.log(`Order confirmation for ${orderId}: ${total}€`);
+}
+
+// Gift Functions
+function loadGifts() {
+    // This function would load gift-specific content
+    // For now, gifts are statically defined in HTML
+}
+
+function selectGiftCard(amount) {
+    const giftCard = {
+        id: 'gift-' + Date.now(),
+        name: `Carte Cadeau ${amount}€`,
+        price: amount,
+        quantity: 1,
+        isGiftCard: true
+    };
+    
+    cart.push(giftCard);
+    updateCartDisplay();
+    saveCartToStorage();
+    
+    showNotification(`Carte cadeau de ${amount}€ ajoutée au panier`, 'success');
+}
+
+// Utility Functions
 function saveCartToStorage() {
-    localStorage.setItem('chocolat-fruitier-cart', JSON.stringify(cart));
+    localStorage.setItem('chocolat-cart', JSON.stringify(cart));
 }
 
 function loadCartFromStorage() {
-    const savedCart = localStorage.getItem('chocolat-fruitier-cart');
+    const savedCart = localStorage.getItem('chocolat-cart');
     if (savedCart) {
-        cart = JSON.parse(savedCart);
-        updateCartDisplay();
+        try {
+            cart = JSON.parse(savedCart);
+            updateCartDisplay();
+        } catch (error) {
+            console.error('Error loading cart:', error);
+            cart = [];
+        }
     }
 }
 
-// Animation Functions
-function showAddToCartAnimation() {
-    const cartBtn = document.getElementById('cartBtn');
-    cartBtn.style.animation = 'none';
-    setTimeout(() => {
-        cartBtn.style.animation = 'pulse 0.3s ease';
-    }, 10);
-}
-
-function showCheckoutAnimation() {
-    const checkoutBtn = document.querySelector('.checkout-btn');
-    checkoutBtn.textContent = 'Traitement en cours...';
-    checkoutBtn.disabled = true;
-    checkoutBtn.style.animation = 'pulse 0.5s infinite';
+function showNotification(message, type = 'info') {
+    const container = document.getElementById('notificationContainer');
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
     
-    setTimeout(() => {
-        checkoutBtn.textContent = 'Commander';
-        checkoutBtn.disabled = false;
-        checkoutBtn.style.animation = 'none';
-    }, 2000);
-}
-
-function showNewsletterAnimation() {
-    const submitBtn = document.querySelector('.newsletter-form button');
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Inscription...';
-    submitBtn.disabled = true;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas fa-${getNotificationIcon(type)}"></i>
+            <span>${message}</span>
+        </div>
+    `;
     
+    container.appendChild(notification);
+    
+    // Show notification
+    setTimeout(() => notification.classList.add('show'), 100);
+    
+    // Hide and remove notification
     setTimeout(() => {
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
-    }, 1500);
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 4000);
 }
 
-// Sound Effects
-function addSoundEffects() {
-    // Create audio contexts for different sounds
-    window.audioContext = window.audioContext || new (window.AudioContext || window.webkitAudioContext)();
+function getNotificationIcon(type) {
+    const icons = {
+        success: 'check-circle',
+        error: 'exclamation-circle',
+        info: 'info-circle',
+        warning: 'exclamation-triangle'
+    };
+    return icons[type] || 'info-circle';
+}
+
+function showLoading() {
+    document.getElementById('loadingOverlay').classList.add('active');
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('active');
 }
 
 function playSound(type) {
-    if (!window.audioContext) return;
+    if (!window.audioContext) {
+        try {
+            window.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+            return; // Audio not supported
+        }
+    }
     
-    const frequency = {
-        'add-to-cart': 800,
+    const frequencies = {
         'modal-open': 600,
-        'success': 1000
+        'add-to-cart': 800,
+        'success': 1000,
+        'error': 300
     };
+    
+    const frequency = frequencies[type] || 600;
     
     const oscillator = window.audioContext.createOscillator();
     const gainNode = window.audioContext.createGain();
@@ -646,7 +1159,7 @@ function playSound(type) {
     oscillator.connect(gainNode);
     gainNode.connect(window.audioContext.destination);
     
-    oscillator.frequency.setValueAtTime(frequency[type] || 600, window.audioContext.currentTime);
+    oscillator.frequency.setValueAtTime(frequency, window.audioContext.currentTime);
     oscillator.type = 'sine';
     
     gainNode.gain.setValueAtTime(0.1, window.audioContext.currentTime);
@@ -656,180 +1169,96 @@ function playSound(type) {
     oscillator.stop(window.audioContext.currentTime + 0.3);
 }
 
-// Utility Functions
-function handleOutsideClick(e) {
-    // Close cart modal
-    const cartModal = document.getElementById('cartModal');
-    if (e.target === cartModal) {
-        closeCart();
-    }
-    
-    // Close product modal
-    const productModal = document.getElementById('productModal');
-    if (e.target === productModal) {
-        closeProductModal();
-    }
-    
-    // Close mobile menu
-    const navMenu = document.querySelector('.nav-menu');
-    if (navMenu.classList.contains('active') && 
-        !e.target.closest('.nav-menu') && 
-        !e.target.closest('.hamburger')) {
-        toggleMobileMenu();
+function scrollToSection(selector) {
+    const element = document.querySelector(selector);
+    if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
     }
 }
 
-function handleKeyboardNavigation(e) {
-    // Close modals with Escape key
-    if (e.key === 'Escape') {
-        closeCart();
-        closeProductModal();
-    }
+// Event Listeners Setup
+function setupEventListeners() {
+    // User dropdown toggle
+    document.addEventListener('click', function(e) {
+        const userProfile = document.querySelector('.user-profile');
+        const userDropdown = document.getElementById('userDropdown');
+        
+        if (userProfile && userProfile.contains(e.target)) {
+            userDropdown.classList.toggle('active');
+        } else {
+            userDropdown.classList.remove('active');
+        }
+        
+        // Close cart if clicking outside
+        const cartSidebar = document.getElementById('cartSidebar');
+        if (cartSidebar && !cartSidebar.contains(e.target) && !e.target.closest('.cart-container')) {
+            cartSidebar.classList.remove('active');
+        }
+        
+        // Close auth modal if clicking outside
+        const authModal = document.getElementById('authModal');
+        if (authModal && e.target === authModal) {
+            hideAuthModal();
+        }
+    });
     
-    // Carousel navigation with arrow keys
-    if (e.key === 'ArrowLeft') {
-        moveCarousel(-1);
-    } else if (e.key === 'ArrowRight') {
-        moveCarousel(1);
-    }
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            // Close any open modals
+            hideAuthModal();
+            document.getElementById('cartSidebar').classList.remove('active');
+            document.getElementById('userDropdown').classList.remove('active');
+        }
+    });
+    
+    // Load cart on page load
+    loadCartFromStorage();
+    
+    // Initialize intersection observer for animations
+    setupScrollAnimations();
 }
 
-// Parallax Effect for Hero Section
-window.addEventListener('scroll', function() {
-    const scrolled = window.pageYOffset;
-    const parallax = document.querySelector('.hero-video');
-    const speed = scrolled * 0.5;
+function setupScrollAnimations() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
     
-    if (parallax) {
-        parallax.style.transform = `translateY(${speed}px)`;
-    }
-});
-
-// Lazy Loading for Images
-function setupLazyLoading() {
-    const images = document.querySelectorAll('img[data-src]');
-    const imageObserver = new IntersectionObserver((entries, observer) => {
+    const observer = new IntersectionObserver(function(entries) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                img.classList.remove('lazy');
-                imageObserver.unobserve(img);
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
             }
         });
+    }, observerOptions);
+    
+    // Observe elements for animation
+    document.querySelectorAll('.feature-card, .product-card, .testimonial-card').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
     });
-
-    images.forEach(img => imageObserver.observe(img));
 }
 
-// Performance Optimization
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
+// Mobile menu functions
+function toggleMobileMenu() {
+    const navMenu = document.querySelector('.nav-menu');
+    const mobileToggle = document.getElementById('mobileToggle');
+    
+    navMenu.classList.toggle('active');
+    mobileToggle.classList.toggle('active');
 }
 
-// Optimize scroll events
-const optimizedScrollHandler = debounce(function() {
-    // Handle scroll events here
-}, 16); // ~60fps
+function toggleUserMenu() {
+    document.getElementById('userDropdown').classList.toggle('active');
+}
 
-window.addEventListener('scroll', optimizedScrollHandler);
-
-// Add custom CSS animations for cart items
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-        100% { transform: scale(1); }
-    }
-    
-    .cart-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem;
-        border-bottom: 1px solid var(--warm-beige);
-        animation: slideInUp 0.3s ease;
-    }
-    
-    .cart-item-controls {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    .cart-item-controls button {
-        background: var(--soft-green);
-        border: 1px solid var(--vintage-black);
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: all 0.3s ease;
-    }
-    
-    .cart-item-controls button:hover {
-        background: var(--muted-yellow);
-        transform: scale(1.1);
-    }
-    
-    .remove-btn {
-        background: var(--dusty-rose) !important;
-        color: white !important;
-    }
-    
-    .product-detail {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-        padding: 2rem;
-    }
-    
-    .product-detail-image {
-        width: 100%;
-        height: 300px;
-        object-fit: cover;
-        border-radius: 15px;
-    }
-    
-    .product-details-section {
-        margin: 1.5rem 0;
-    }
-    
-    .product-details-section h3 {
-        color: var(--chocolate-brown);
-        margin-bottom: 0.5rem;
-    }
-    
-    .add-to-cart-btn.large {
-        width: 100%;
-        padding: 1rem;
-        font-size: 1.1rem;
-        margin-top: 2rem;
-    }
-    
-    @media (max-width: 768px) {
-        .product-detail {
-            grid-template-columns: 1fr;
-            padding: 1rem;
-        }
-    }
-`;
-
-document.head.appendChild(style);
-
-// Initialize when DOM is ready
+// Initialize app when DOM is loaded
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeWebsite);
+    document.addEventListener('DOMContentLoaded', initializeApp);
 } else {
-    initializeWebsite();
+    initializeApp();
 }
