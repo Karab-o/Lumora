@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chocolat Fruitier - Artisan Chocolate Fruit Bars</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍫</text></svg>">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>Chocolat Fruitier</h1>
+                <span class="tagline">Artisan depuis 1925</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Accueil</a></li>
+                <li><a href="#products" class="nav-link">Produits</a></li>
+                <li><a href="#ingredients" class="nav-link">Ingrédients</a></li>
+                <li><a href="#testimonials" class="nav-link">Avis</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="cart-btn" id="cartBtn">
+                    <span class="cart-icon">🛒</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-video">
+            <video autoplay muted loop playsinline>
+                <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4">
+            </video>
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="hero-subtitle">L'Art du</span>
+                <span class="hero-main">Chocolat Fruitier</span>
+            </h1>
+            <p class="hero-description">
+                Découvrez nos barres de chocolat artisanales aux fruits naturels, 
+                créées avec passion dans notre atelier parisien depuis 1925.
+            </p>
+            <button class="cta-button" onclick="scrollToSection('products')">
+                <span>Découvrir nos créations</span>
+                <div class="button-animation"></div>
+            </button>
+        </div>
+        <div class="scroll-indicator">
+            <div class="scroll-line"></div>
+            <span>Scroll</span>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="products-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Nos Créations Artisanales</h2>
+                <p class="section-subtitle">Chaque barre raconte une histoire de saveurs authentiques</p>
+            </div>
+            
+            <div class="product-carousel">
+                <div class="carousel-container" id="productCarousel">
+                    <div class="product-card" data-product="fraise">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1549007953-2f2dc0b24019?w=400&h=300&fit=crop" alt="Chocolat Fraise">
+                            <div class="product-overlay">
+                                <button class="quick-view-btn" onclick="openProductModal('fraise')">Voir détails</button>
+                                <button class="add-to-cart-btn" onclick="addToCart('fraise', 'Chocolat Fraise', 8.50)">Ajouter au panier</button>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <h3>Chocolat Fraise</h3>
+                            <p>Chocolat noir 70% et morceaux de fraises séchées</p>
+                            <span class="price">8,50€</span>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-product="mangue">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1511381939415-e44015466834?w=400&h=300&fit=crop" alt="Chocolat Mangue">
+                            <div class="product-overlay">
+                                <button class="quick-view-btn" onclick="openProductModal('mangue')">Voir détails</button>
+                                <button class="add-to-cart-btn" onclick="addToCart('mangue', 'Chocolat Mangue', 9.00)">Ajouter au panier</button>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <h3>Chocolat Mangue</h3>
+                            <p>Chocolat au lait et cubes de mangue exotique</p>
+                            <span class="price">9,00€</span>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-product="framboises">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1548907040-4baa42d10919?w=400&h=300&fit=crop" alt="Chocolat Framboises">
+                            <div class="product-overlay">
+                                <button class="quick-view-btn" onclick="openProductModal('framboises')">Voir détails</button>
+                                <button class="add-to-cart-btn" onclick="addToCart('framboises', 'Chocolat Framboises', 8.75)">Ajouter au panier</button>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <h3>Chocolat Framboises</h3>
+                            <p>Chocolat blanc et framboises lyophilisées</p>
+                            <span class="price">8,75€</span>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-product="orange">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=400&h=300&fit=crop" alt="Chocolat Orange">
+                            <div class="product-overlay">
+                                <button class="quick-view-btn" onclick="openProductModal('orange')">Voir détails</button>
+                                <button class="add-to-cart-btn" onclick="addToCart('orange', 'Chocolat Orange', 8.25)">Ajouter au panier</button>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <h3>Chocolat Orange</h3>
+                            <p>Chocolat noir et zestes d'orange confite</p>
+                            <span class="price">8,25€</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-controls">
+                    <button class="carousel-btn prev" onclick="moveCarousel(-1)">‹</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(1)">›</button>
+                </div>
+            </div>
+
+            <!-- Custom Bar Builder -->
+            <div class="custom-bar-section">
+                <h3>Créez votre barre personnalisée</h3>
+                <div class="custom-builder">
+                    <div class="builder-step">
+                        <h4>1. Choisissez votre chocolat</h4>
+                        <div class="options">
+                            <label><input type="radio" name="chocolate" value="noir"> Chocolat Noir 70%</label>
+                            <label><input type="radio" name="chocolate" value="lait"> Chocolat au Lait</label>
+                            <label><input type="radio" name="chocolate" value="blanc"> Chocolat Blanc</label>
+                        </div>
+                    </div>
+                    <div class="builder-step">
+                        <h4>2. Sélectionnez vos fruits</h4>
+                        <div class="options">
+                            <label><input type="checkbox" name="fruits" value="fraise"> Fraises</label>
+                            <label><input type="checkbox" name="fruits" value="mangue"> Mangue</label>
+                            <label><input type="checkbox" name="fruits" value="framboises"> Framboises</label>
+                            <label><input type="checkbox" name="fruits" value="orange"> Orange</label>
+                            <label><input type="checkbox" name="fruits" value="myrtilles"> Myrtilles</label>
+                        </div>
+                    </div>
+                    <button class="custom-add-btn" onclick="addCustomBar()">Ajouter ma création - 12,00€</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ingredients Section -->
+    <section id="ingredients" class="ingredients-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Ingrédients Naturels</h2>
+                <p class="section-subtitle">La qualité avant tout, depuis notre atelier artisanal</p>
+            </div>
+            
+            <div class="ingredients-grid">
+                <div class="ingredient-card">
+                    <div class="ingredient-icon">🍫</div>
+                    <h3>Cacao Équitable</h3>
+                    <p>Sélectionné directement auprès de producteurs équitables d'Amérique du Sud</p>
+                </div>
+                <div class="ingredient-card">
+                    <div class="ingredient-icon">🍓</div>
+                    <h3>Fruits Français</h3>
+                    <p>Fruits de saison cueillis dans nos vergers partenaires de France</p>
+                </div>
+                <div class="ingredient-card">
+                    <div class="ingredient-icon">🥛</div>
+                    <h3>Lait de Normandie</h3>
+                    <p>Lait frais provenant de fermes normandes respectueuses du bien-être animal</p>
+                </div>
+                <div class="ingredient-card">
+                    <div class="ingredient-icon">🌿</div>
+                    <h3>Sans Additifs</h3>
+                    <p>Aucun conservateur, colorant ou arôme artificiel dans nos créations</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Ce que disent nos clients</h2>
+            </div>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p>"Un délice absolu ! Le chocolat fraise me rappelle les goûters de mon enfance, mais en version luxueuse."</p>
+                    <div class="testimonial-author">
+                        <strong>Marie Dubois</strong>
+                        <span>Paris</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p>"La qualité est exceptionnelle. On sent vraiment la passion artisanale dans chaque bouchée."</p>
+                    <div class="testimonial-author">
+                        <strong>Jean-Claude Martin</strong>
+                        <span>Lyon</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p>"J'ai offert un assortiment à ma famille. Tout le monde a adoré, même les plus difficiles !"</p>
+                    <div class="testimonial-author">
+                        <strong>Sophie Bernard</strong>
+                        <span>Marseille</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h2>Visitez Notre Atelier</h2>
+                    <p>Découvrez nos secrets de fabrication dans notre atelier parisien</p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <strong>Adresse</strong>
+                            <p>42 Rue de la Chocolaterie<br>75004 Paris, France</p>
+                        </div>
+                        <div class="contact-item">
+                            <strong>Horaires</strong>
+                            <p>Lun-Sam: 9h-19h<br>Dimanche: 10h-18h</p>
+                        </div>
+                        <div class="contact-item">
+                            <strong>Contact</strong>
+                            <p>+33 1 42 86 75 90<br>bonjour@chocolatfruitier.fr</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="newsletter">
+                    <h3>Newsletter Gourmande</h3>
+                    <p>Recevez nos nouveautés et recettes exclusives</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Votre email" required>
+                        <button type="submit">S'inscrire</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>Chocolat Fruitier</h3>
+                    <p>L'art du chocolat depuis 1925</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#legal">Mentions légales</a>
+                    <a href="#privacy">Confidentialité</a>
+                    <a href="#shipping">Livraison</a>
+                    <a href="#returns">Retours</a>
+                </div>
+                <div class="footer-social">
+                    <a href="#" aria-label="Instagram">📷</a>
+                    <a href="#" aria-label="Facebook">📘</a>
+                    <a href="#" aria-label="Twitter">🐦</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Chocolat Fruitier. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Shopping Cart Modal -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-content">
+            <div class="cart-header">
+                <h3>Votre Panier</h3>
+                <button class="close-cart" onclick="closeCart()">×</button>
+            </div>
+            <div class="cart-items" id="cartItems">
+                <p class="empty-cart">Votre panier est vide</p>
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <strong>Total: <span id="cartTotal">0,00€</span></strong>
+                </div>
+                <button class="checkout-btn" onclick="checkout()">Commander</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div class="product-modal" id="productModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeProductModal()">×</button>
+            <div class="modal-body" id="modalBody">
+                <!-- Product details will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
